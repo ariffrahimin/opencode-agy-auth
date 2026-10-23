@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.6](https://github.com/ariffrahimin/opencode-agy-auth/compare/1.4.6...1.4.6) (2026-10-23)
+
+
+### Features
+
+* release opencode-agy-auth v1.5.0 with Gemini Enterprise support ([c6252d0](https://github.com/ariffrahimin/opencode-agy-auth/commit/c6252d0f8b58a79f33123ae20bb9fa370c096794))
+
 ## [1.4.6](https://github.com/anthonyhaussman/opencode-agy-auth/compare/1.4.5...1.4.6) (2026-10-23)
 
 
