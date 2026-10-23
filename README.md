@@ -57,29 +57,11 @@ If you are running OpenCode in environments with specific requirements for Antig
 
 Once installed and configured, OpenCode will automatically authenticate against Antigravity CLI when interacting with eligible models. If no active session exists, you will be prompted to complete an OAuth login.
 
-Additionally, you can check your quota using slash commands directly in your OpenCode prompt:
-
-- `/agyquota` - Per-model detail view. Shows remaining tokens, progress bars, and reset timers for every model variant. Use when you need the full breakdown of individual buckets.
-- `/agyquotasummary` - High-level grouped view. Shows weekly and 5-hour limits aggregated by model family. Use when you want a quick overview of your allowance across all models.
-
-You can also ask naturally:
-> "What is my current agy quota?"
-> "Show me my quota summary"
-
-### Companion Plugin: `opencode-quota`
-
-This repository is compatible with [`opencode-quota`](https://github.com/slkiser/opencode-quota), an OpenCode plugin for displaying quota information directly in your status bar or interface.
-
-Follow the [Google AGY Quick Setup Guide](https://github.com/slkiser/opencode-quota/blob/main/docs/readme/providers.md#google-agy-quick-setup) to set them up together.
-
-To use both plugins side by side, register them in your `opencode.json`:
-
 ```json
 {
   "$schema": "https://opencode.ai/config.json",
   "plugin": [
     "@anthonyhaussman/opencode-agy-auth",
-    "opencode-quota"
   ],
   "provider": {
     "google-agy": {
@@ -91,7 +73,6 @@ To use both plugins side by side, register them in your `opencode.json`:
 }
 ```
 
-When used together, `opencode-quota` seamlessly visualizes rate limits and quotas for models authenticated through `google-agy`.
 
 ### Disk Persistence
 
