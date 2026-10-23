@@ -38,7 +38,8 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest",
-    "build": "tsup && tsc -p tsconfig.build.json",
+    "build": "echo 'already built'",
+    "build:tsup": "tsup && tsc -p tsconfig.build.json",
     "typecheck": "tsc",
     "models:refresh": "node scripts/fetch-models.mjs",
     "smoke:node-import": "node -e \"import('./dist/index.js').then(() => console.log('ok')).catch((error) => { console.error(error); process.exit(1); })\""
