@@ -57,22 +57,6 @@ If you are running OpenCode in environments with specific requirements for Antig
 
 Once installed and configured, OpenCode will automatically authenticate against Antigravity CLI when interacting with eligible models. If no active session exists, you will be prompted to complete an OAuth login.
 
-```json
-{
-  "$schema": "https://opencode.ai/config.json",
-  "plugin": [
-    "@anthonyhaussman/opencode-agy-auth",
-  ],
-  "provider": {
-    "google-agy": {
-      "options": {
-        "projectId": "your-google-cloud-project-id"
-      }
-    }
-  }
-}
-```
-
 
 ### Disk Persistence
 
@@ -134,25 +118,7 @@ The plugin natively supports both OpenCode v1 (>= 1.18.29) and [OpenCode v2](htt
 
 No special flags or configurations are required - the plugin detects runtime automatically.
 
-## Pre-release Channel
-
-To test bleeding-edge features or upcoming changes before official releases, configure the `@alpha` distribution tag:
-
-```bash
-npm install @anthonyhaussman/opencode-agy-auth@alpha
-```
-
-Or configure it directly in your `opencode.json`:
-
-```json
-{
-  "plugin": ["@anthonyhaussman/opencode-agy-auth@alpha"]
-}
-```
-
-> [!WARNING]
-> **Instability Warning**: The `@alpha` release contains experimental features and active development builds. It may be unstable or cause disruptions in session authentication and model requests. Use only for testing and development. For day-to-day work, use the stable release.
 
 ## Star History & Support
 
-If this plugin saved you time or made using Antigravity models in OpenCode smoother, consider giving the repository a star on [GitHub](https://github.com/anthonyhaussman/opencode-agy-auth) - it helps others discover the project.
+If this plugin saved you time or made using Antigravity models in OpenCode smoother, consider giving the repository a star on [GitHub](https://github.com/ariffrahimin/opencode-agy-auth) - it helps others discover the project.
