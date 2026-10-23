@@ -23,6 +23,12 @@ export async function checkOrGetEnterpriseLicense(
   location = "global",
 ): Promise<EnterpriseLicenseInfo | null> {
   if (!projectId) return null;
+  if (
+    (process.env.VITEST || process.env.NODE_ENV === "test") &&
+    process.env.OPENCODE_AGY_TEST_ENTERPRISE !== "1"
+  ) {
+    return null;
+  }
   if (enterpriseLicenseCache && enterpriseLicenseCache.projectId === projectId) {
     return enterpriseLicenseCache;
   }

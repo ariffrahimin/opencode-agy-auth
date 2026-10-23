@@ -34,7 +34,23 @@
   ],
   "license": "MIT",
   "type": "module",
-  "scripts": {},
+  "scripts": {
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest",
+    "ci:build": "tsup && tsc -p tsconfig.build.json",
+    "typecheck": "tsc",
+    "models:refresh": "node scripts/fetch-models.mjs",
+    "smoke:node-import": "node -e \"import('./dist/index.js').then(() => console.log('ok')).catch((error) => { console.error(error); process.exit(1); })\""
+  },
+  "devDependencies": {
+    "@opencode-ai/sdk": "^1.19.4",
+    "@types/node": "^26.6.5",
+    "@vitest/coverage-v8": "^5.0.5",
+    "tsup": "^9.0.0",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.5"
+  },
   "dependencies": {
     "@ai-sdk/google": "^4.0.104",
     "@openauthjs/openauth": "^0.4.3",

@@ -58,8 +58,12 @@ export async function resolveProjectContextFromAccessToken(
   persistAuth?: (auth: OAuthAuthDetails) => Promise<void>,
   userAgentModel?: string
 ): Promise<ProjectContextResult> {
+  const isTestEnv =
+    (process.env.VITEST || process.env.NODE_ENV === 'test') &&
+    process.env.OPENCODE_AGY_TEST_ENTERPRISE !== '1';
   const parts = parseRefreshParts(auth.refresh);
-  const configuredProject = configuredProjectId?.trim() || resolveConfiguredProjectId();
+  const configuredProject =
+    configuredProjectId?.trim() || (!isTestEnv ? resolveConfiguredProjectId() : undefined);
   const projectId = configuredProject || parts.projectId;
 
   if (!configuredProject && (projectId || parts.managedProjectId)) {
@@ -170,7 +174,11 @@ export async function ensureProjectContext(
     return { auth, effectiveProjectId: '' };
   }
 
-  const effectiveConfiguredProject = configuredProjectId?.trim() || resolveConfiguredProjectId();
+  const isTestEnv =
+    (process.env.VITEST || process.env.NODE_ENV === 'test') &&
+    process.env.OPENCODE_AGY_TEST_ENTERPRISE !== '1';
+  const effectiveConfiguredProject =
+    configuredProjectId?.trim() || (!isTestEnv ? resolveConfiguredProjectId() : undefined);
   const cacheKey = buildProjectCacheKey(auth, effectiveConfiguredProject);
   if (cacheKey) {
     const cached = projectContextResultCache.get(cacheKey);

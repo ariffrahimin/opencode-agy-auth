@@ -16,17 +16,22 @@ export function resolveConfiguredProjectId(
 ): string | undefined {
   const env = input.env ?? process.env;
   let gcpProjectFromFile: string | undefined;
-  try {
-    const homeDir = env.HOME || env.USERPROFILE || "";
-    if (homeDir) {
-      const p = `${homeDir}/.gemini/antigravity-cli/settings.json`;
-      if (existsSync(p)) {
-        const data = JSON.parse(readFileSync(p, "utf8"));
-        gcpProjectFromFile = data?.gcp?.project;
+  const isTestEnv =
+    (process.env.VITEST || process.env.NODE_ENV === "test") &&
+    process.env.OPENCODE_AGY_TEST_ENTERPRISE !== "1";
+  if (!isTestEnv) {
+    try {
+      const homeDir = env.HOME || env.USERPROFILE || "";
+      if (homeDir) {
+        const p = `${homeDir}/.gemini/antigravity-cli/settings.json`;
+        if (existsSync(p)) {
+          const data = JSON.parse(readFileSync(p, "utf8"));
+          gcpProjectFromFile = data?.gcp?.project;
+        }
       }
+    } catch {
+      // Ignore file read errors
     }
-  } catch {
-    // Ignore file read errors
   }
 
   return (

@@ -381,16 +381,19 @@ import { existsSync as existsSync2, readFileSync as readFileSync2 } from "fs";
 function resolveConfiguredProjectId(input = {}) {
   const env = input.env ?? process.env;
   let gcpProjectFromFile;
-  try {
-    const homeDir = env.HOME || env.USERPROFILE || "";
-    if (homeDir) {
-      const p = `${homeDir}/.gemini/antigravity-cli/settings.json`;
-      if (existsSync2(p)) {
-        const data = JSON.parse(readFileSync2(p, "utf8"));
-        gcpProjectFromFile = data?.gcp?.project;
+  const isTestEnv = (process.env.VITEST || process.env.NODE_ENV === "test") && process.env.OPENCODE_AGY_TEST_ENTERPRISE !== "1";
+  if (!isTestEnv) {
+    try {
+      const homeDir = env.HOME || env.USERPROFILE || "";
+      if (homeDir) {
+        const p = `${homeDir}/.gemini/antigravity-cli/settings.json`;
+        if (existsSync2(p)) {
+          const data = JSON.parse(readFileSync2(p, "utf8"));
+          gcpProjectFromFile = data?.gcp?.project;
+        }
       }
+    } catch {
     }
-  } catch {
   }
   return normalizeProjectId(env.OPENCODE_AGY_PROJECT_ID) ?? resolveConfiguredProjectIdFromProvider(input.provider) ?? normalizeProjectId(input.configProjectId) ?? resolveConfiguredProjectIdFromConfig(input.config) ?? normalizeProjectId(gcpProjectFromFile) ?? normalizeProjectId(env.GOOGLE_CLOUD_PROJECT) ?? normalizeProjectId(env.GOOGLE_CLOUD_PROJECT_ID);
 }
@@ -1178,6 +1181,9 @@ function getEnterpriseLicenseCache() {
 }
 async function checkOrGetEnterpriseLicense(accessToken, projectId, location = "global") {
   if (!projectId) return null;
+  if ((process.env.VITEST || process.env.NODE_ENV === "test") && process.env.OPENCODE_AGY_TEST_ENTERPRISE !== "1") {
+    return null;
+  }
   if (enterpriseLicenseCache && enterpriseLicenseCache.projectId === projectId) {
     return enterpriseLicenseCache;
   }
@@ -1508,8 +1514,9 @@ function invalidateProjectContextCache(refresh) {
   }
 }
 async function resolveProjectContextFromAccessToken(auth, accessToken, configuredProjectId, persistAuth, userAgentModel) {
+  const isTestEnv = (process.env.VITEST || process.env.NODE_ENV === "test") && process.env.OPENCODE_AGY_TEST_ENTERPRISE !== "1";
   const parts = parseRefreshParts(auth.refresh);
-  const configuredProject = configuredProjectId?.trim() || resolveConfiguredProjectId();
+  const configuredProject = configuredProjectId?.trim() || (!isTestEnv ? resolveConfiguredProjectId() : void 0);
   const projectId = configuredProject || parts.projectId;
   if (!configuredProject && (projectId || parts.managedProjectId)) {
     return {
@@ -1599,7 +1606,8 @@ async function ensureProjectContext(auth, client, configuredProjectId, userAgent
   if (!accessToken) {
     return { auth, effectiveProjectId: "" };
   }
-  const effectiveConfiguredProject = configuredProjectId?.trim() || resolveConfiguredProjectId();
+  const isTestEnv = (process.env.VITEST || process.env.NODE_ENV === "test") && process.env.OPENCODE_AGY_TEST_ENTERPRISE !== "1";
+  const effectiveConfiguredProject = configuredProjectId?.trim() || (!isTestEnv ? resolveConfiguredProjectId() : void 0);
   const cacheKey = buildProjectCacheKey(auth, effectiveConfiguredProject);
   if (cacheKey) {
     const cached2 = projectContextResultCache.get(cacheKey);
