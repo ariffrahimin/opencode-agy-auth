@@ -41,8 +41,7 @@
     "build": "tsup && tsc -p tsconfig.build.json",
     "typecheck": "tsc",
     "models:refresh": "node scripts/fetch-models.mjs",
-    "smoke:node-import": "node -e \"import('./dist/index.js').then(() => console.log('ok')).catch((error) => { console.error(error); process.exit(1); })\"",
-    "prepack": "npm run build"
+    "smoke:node-import": "node -e \"import('./dist/index.js').then(() => console.log('ok')).catch((error) => { console.error(error); process.exit(1); })\""
   },
   "devDependencies": {
     "@opencode-ai/sdk": "^1.19.4",
