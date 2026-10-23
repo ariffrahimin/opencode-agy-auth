@@ -1,0 +1,107 @@
+import { AGY_GENERATIVE_LANGUAGE_ENDPOINT } from "../../constants";
+
+const REQUEST_MODEL_FALLBACKS: Record<string, string> = {
+  // gemini-3.1-pro-high still appears in `agy models` output but its backend
+  // enum (MODEL_PLACEHOLDER_M37) was deprecated server-side in favor of
+  // gemini-pro-agent (MODEL_PLACEHOLDER_M16). See models.json
+  // deprecatedModelIds entry. Rewrite the model id before getModelEnum
+  // resolves the deprecated enum, so both body.model and labels.model_enum
+  // use the live canonical id and enum.
+  "gemini-3.1-pro-high": "gemini-pro-agent",
+};
+const GENERATIVE_LANGUAGE_HOST = new URL(AGY_GENERATIVE_LANGUAGE_ENDPOINT).host;
+const CODE_ASSIST_HOST_SUFFIX = "cloudcode-pa.googleapis.com";
+const MODEL_ACTION_PATTERN = /\/models\/[^:]+:\w+/;
+
+/**
+ * Returns the URL string for supported RequestInfo inputs.
+ */
+export function toRequestUrlString(value: RequestInfo): string {
+  if (typeof value === "string") {
+    return value;
+  }
+  if (value instanceof URL) {
+    return value.toString();
+  }
+  const candidate = (value as Request).url;
+  if (candidate) {
+    return candidate;
+  }
+  return value.toString();
+}
+
+/**
+ * Detects Gemini/Generative Language API requests via URL.
+ */
+export function isGenerativeLanguageRequest(input: RequestInfo): input is string {
+  const url = toRequestUrlString(input);
+  return (
+    url.includes(GENERATIVE_LANGUAGE_HOST) ||
+    (url.includes(CODE_ASSIST_HOST_SUFFIX) && MODEL_ACTION_PATTERN.test(url))
+  );
+}
+
+export function parseGenerativeLanguageRequest(input: RequestInfo):
+  | { requestedModel: string; effectiveModel: string; action: string }
+  | undefined {
+  const match = toRequestUrlString(input).match(/\/models\/([^:]+):(\w+)/);
+  if (!match) {
+    return undefined;
+  }
+
+  const [, requestedModel = "", action = ""] = match;
+  return {
+    requestedModel,
+    effectiveModel: REQUEST_MODEL_FALLBACKS[requestedModel] ?? requestedModel,
+    action,
+  };
+}
+
+export function isRecord(value: unknown): value is Record<string, unknown> {
+  return !!value && typeof value === "object";
+}
+
+export function readString(value: unknown): string | undefined {
+  if (typeof value !== "string") {
+    return undefined;
+  }
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : undefined;
+}
+
+export function pickString(...values: unknown[]): string | undefined {
+  for (const value of values) {
+    const str = readString(value);
+    if (str) {
+      return str;
+    }
+  }
+  return undefined;
+}
+
+/**
+ * Preserves Cloud Code trace identity for downstream clients by mapping traceId to responseId.
+ */
+export function injectResponseIdFromTrace<T extends Record<string, unknown>>(body: T): T {
+  const traceId = readString(body.traceId);
+  if (!traceId) {
+    return body;
+  }
+
+  const response = body.response;
+  if (!isRecord(response)) {
+    return body;
+  }
+
+  if (readString(response.responseId)) {
+    return body;
+  }
+
+  return {
+    ...body,
+    response: {
+      ...response,
+      responseId: traceId,
+    },
+  };
+}

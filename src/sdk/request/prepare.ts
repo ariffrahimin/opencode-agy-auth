@@ -1,0 +1,984 @@
+import { randomUUID } from "node:crypto";
+
+import { AGY_CODE_ASSIST_ENDPOINT } from "../../constants";
+import modelsJson from "../../../models.json";
+import { normalizeThinkingConfig } from "../request-helpers";
+import { buildAgyCliUserAgent } from "../user-agent";
+import { normalizeRequestPayloadIdentifiers, normalizeWrappedIdentifiers } from "./identifiers";
+import { addThoughtSignaturesToFunctionCalls, transformOpenAIToolCalls } from "./openai";
+import { isGenerativeLanguageRequest, parseGenerativeLanguageRequest } from "./shared";
+import { getLatestSignature, getSignatureForText } from "../../plugin/cache";
+import { getEnterpriseLicenseCache, resolveEnterpriseModelName } from "../../plugin/project/types";
+import { resolveConfiguredProjectId } from "../../plugin/provider";
+import { TIER_MAPPING } from "../../plugin/tier";
+import { closeToolLoopForThinking } from "./thinking";
+import { getTurnStateTracker } from "./turn-state-tracker";
+import { getToolMapper, sanitizeToolName, type ToolMapper } from "./tool-mapper";
+
+const STREAM_ACTION = "streamGenerateContent";
+
+export interface ThinkingConfigDefaults {
+  provider?: unknown;
+  models?: Record<string, unknown>;
+}
+
+/**
+ * Rewrites OpenAI-style requests into the format for Gemini Code Assist requests.
+ */
+export function prepareAgyRequest(
+  input: RequestInfo,
+  init: RequestInit | undefined,
+  accessToken: string,
+  projectId: string,
+  thinkingConfigDefaults?: ThinkingConfigDefaults,
+): {
+  request: RequestInfo;
+  init: RequestInit;
+  streaming: boolean;
+  requestedModel?: string;
+  sessionId?: string;
+} {
+  const baseInit: RequestInit = { ...init };
+  const headers = new Headers(init?.headers ?? {});
+
+  if (!isGenerativeLanguageRequest(input)) {
+    return {
+      request: input,
+      init: { ...baseInit, headers },
+      streaming: false,
+    };
+  }
+
+  const requestTarget = parseGenerativeLanguageRequest(input);
+  if (!requestTarget) {
+    return {
+      request: input,
+      init: { ...baseInit, headers },
+      streaming: false,
+    };
+  }
+
+  headers.set("Authorization", `Bearer ${accessToken}`);
+  headers.delete("x-api-key");
+  headers.delete("x-goog-api-key");
+
+  const { requestedModel: rawModel, effectiveModel, action: rawAction } = requestTarget;
+  const streaming = rawAction === STREAM_ACTION;
+
+  const entCache = getEnterpriseLicenseCache();
+  const effectiveProject = projectId || entCache?.projectId || resolveConfiguredProjectId() || "";
+  const isEnterprise = Boolean(
+    entCache && effectiveProject && entCache.projectId === effectiveProject,
+  );
+  const location = entCache?.location || "global";
+
+  const transformedUrl = isEnterprise
+    ? `https://businessaicode.googleapis.com/v1beta/projects/${effectiveProject}/locations/${location}:${rawAction}${
+        streaming ? "?alt=sse" : ""
+      }`
+    : `${AGY_CODE_ASSIST_ENDPOINT}/v1internal:${rawAction}${
+        streaming ? "?alt=sse" : ""
+      }`;
+
+  let body = baseInit.body;
+  let sessionId: string | undefined;
+
+  if (typeof baseInit.body === "string" && baseInit.body) {
+    const transformed = transformRequestBody(
+      baseInit.body,
+      effectiveProject,
+      effectiveModel,
+      rawModel,
+      thinkingConfigDefaults,
+      isEnterprise,
+    );
+    if (transformed.body) {
+      body = transformed.body;
+    }
+    sessionId = transformed.sessionId;
+  }
+
+  if (streaming) {
+    headers.set("Accept", "text/event-stream");
+  }
+
+  const userAgent = isEnterprise
+    ? "antigravity/1.4.6 darwin/arm64"
+    : buildAgyCliUserAgent(effectiveModel);
+  headers.set("User-Agent", userAgent);
+
+  return {
+    request: transformedUrl,
+    init: {
+      ...baseInit,
+      headers,
+      body,
+    },
+    streaming,
+    requestedModel: rawModel,
+    sessionId,
+  };
+}
+
+export const LEGACY_MODEL_ENUM_FALLBACKS: Record<string, string> = {
+  "gemini-3.1-pro-high": "MODEL_PLACEHOLDER_M16",
+  "gemini-pro-agent": "MODEL_PLACEHOLDER_M16",
+};
+
+export function getModelEnum(modelName: string): string {
+  const deprecated = (modelsJson as any).deprecatedModelIds;
+  if (deprecated && deprecated[modelName]) {
+    const entry = deprecated[modelName];
+    if (typeof entry === "string" && LEGACY_MODEL_ENUM_FALLBACKS[entry]) {
+      return LEGACY_MODEL_ENUM_FALLBACKS[entry];
+    }
+    if (entry.newModelEnum) {
+      return entry.newModelEnum;
+    }
+  }
+  const models = (modelsJson as any).models;
+  if (models && models[modelName] && models[modelName].model) {
+    return models[modelName].model;
+  }
+  if (deprecated && deprecated[modelName] && deprecated[modelName].oldModelEnum) {
+    return deprecated[modelName].oldModelEnum;
+  }
+  if (LEGACY_MODEL_ENUM_FALLBACKS[modelName]) {
+    return LEGACY_MODEL_ENUM_FALLBACKS[modelName];
+  }
+  return "MODEL_PLACEHOLDER_M16";
+}
+
+export function isClaudeModel(model: string): boolean {
+  return model.toLowerCase().includes("claude");
+}
+
+function isThinkingLikePart(part: any): boolean {
+  return (
+    !!part &&
+    typeof part === "object" &&
+    (part.thought === true ||
+      part.type === "thinking" ||
+      part.type === "redacted_thinking" ||
+      part.type === "reasoning" ||
+      typeof part.thinking === "string")
+  );
+}
+
+function isToolResultTurn(turn: any): boolean {
+  if (!turn || (turn.role !== "user" && turn.role !== "tool") || !Array.isArray(turn.parts)) {
+    return false;
+  }
+  return turn.parts.some(
+    (p: any) => p && typeof p === "object" && ("functionResponse" in p || p.type === "tool_result"),
+  );
+}
+
+export function sanitizeClaudeThinkingParts(contents: any[], model: string, sessionId?: string): void {
+  if (!isClaudeModel(model) || !Array.isArray(contents)) {
+    return;
+  }
+
+  // Check if we are in an active in-flight tool continuation (the latest turn contains tool responses)
+  const lastTurn = contents[contents.length - 1];
+  const isTrailingToolResponse = Boolean(lastTurn && isToolResultTurn(lastTurn));
+
+  // Track the start of the active tool loop (all messages after the last non-tool-result user message).
+  // In all completed turns before the latest real user prompt, thinking blocks MUST be omitted
+  // to avoid Anthropic HMAC prefix-mismatch errors (`Invalid signature in thinking block`).
+  let activeLoopStartIdx = -1;
+  if (isTrailingToolResponse) {
+    let lastRealUserIdx = -1;
+    for (let i = 0; i < contents.length; i++) {
+      const turn = contents[i];
+      if (turn && (turn.role === "user" || turn.role === "human") && !isToolResultTurn(turn)) {
+        lastRealUserIdx = i;
+      }
+    }
+    activeLoopStartIdx = lastRealUserIdx + 1;
+  } else if (contents.length === 1 && (contents[0]?.role === "model" || contents[0]?.role === "assistant")) {
+    activeLoopStartIdx = 0;
+  }
+
+  for (let turnIdx = 0; turnIdx < contents.length; turnIdx++) {
+    const turn = contents[turnIdx];
+    if (!turn || typeof turn !== "object") continue;
+    if (turn.role !== "model" && turn.role !== "assistant") continue;
+    if (!Array.isArray(turn.parts)) continue;
+
+    const canPreserveThinking = activeLoopStartIdx !== -1 && turnIdx >= activeLoopStartIdx;
+
+    const filteredParts = turn.parts.filter((part: any) => {
+      if (!part || typeof part !== "object") return true;
+
+      if (!isThinkingLikePart(part)) {
+        return true;
+      }
+
+      if (!canPreserveThinking) {
+        return false;
+      }
+
+      const isUsableSig = (s: unknown): s is string =>
+        typeof s === "string" && s.length > 0 && s !== "skip_thought_signature_validator";
+      let sig = isUsableSig(part.thoughtSignature)
+        ? part.thoughtSignature
+        : isUsableSig(part.signature)
+          ? part.signature
+          : isUsableSig(part.state?.thoughtSignature)
+            ? part.state.thoughtSignature
+            : undefined;
+
+      let recovered = false;
+      if ((!sig || sig === "skip_thought_signature_validator") && sessionId) {
+        const text =
+          typeof part.text === "string"
+            ? part.text
+            : typeof part.thinking === "string"
+              ? part.thinking
+              : undefined;
+        if (text) {
+          const recoveredSig = getSignatureForText(sessionId, text);
+          if (recoveredSig) {
+            sig = recoveredSig;
+            recovered = true;
+          }
+        }
+      }
+
+      const isValidSig =
+        typeof sig === "string" &&
+        sig.length > 0 &&
+        sig !== "skip_thought_signature_validator";
+
+      if (isValidSig) {
+        part.thoughtSignature = sig;
+        part.signature = sig;
+        if (part.state) {
+          part.state.thoughtSignature = sig;
+        }
+        return true;
+      }
+
+      // If we do not have a valid, verified signature for this thinking block, drop it.
+      return false;
+    });
+
+    if (filteredParts.length === 0) {
+      turn.parts = [{ text: "" }];
+    } else {
+      turn.parts = filteredParts;
+    }
+  }
+
+  if (isTrailingToolResponse && activeLoopStartIdx !== -1) {
+    let needsLoopClosure = false;
+    for (let i = activeLoopStartIdx; i < contents.length; i++) {
+      const turn = contents[i];
+      if (!turn || (turn.role !== "model" && turn.role !== "assistant")) continue;
+      const parts = Array.isArray(turn.parts) ? turn.parts : [];
+      const hasFunctionCall = parts.some(
+        (p: any) => p && typeof p === "object" && ("functionCall" in p || p.type === "tool_use"),
+      );
+      const hasValidThinking = parts.some(isThinkingLikePart);
+      if (hasFunctionCall && !hasValidThinking) {
+        needsLoopClosure = true;
+        break;
+      }
+    }
+
+    if (needsLoopClosure) {
+      for (let i = activeLoopStartIdx; i < contents.length; i++) {
+        const turn = contents[i];
+        if (!turn || (turn.role !== "model" && turn.role !== "assistant") || !Array.isArray(turn.parts)) continue;
+        const stripped = turn.parts.filter((p: any) => !isThinkingLikePart(p));
+        turn.parts = stripped.length === 0 ? [{ text: "" }] : stripped;
+      }
+      const closed = closeToolLoopForThinking(contents);
+      contents.splice(0, contents.length, ...closed);
+    }
+  }
+}
+
+function cleanProtobufParts(contents: any[], isClaude: boolean): void {
+  if (!Array.isArray(contents)) return;
+  for (const turn of contents) {
+    if (turn && Array.isArray(turn.parts)) {
+      for (const part of turn.parts) {
+        if (part && typeof part === "object") {
+          if (!part.thoughtSignature || part.thoughtSignature === "skip_thought_signature_validator") {
+            const fallbackSig =
+              typeof part.signature === "string" && part.signature.length > 0
+                ? part.signature
+                : typeof part.state?.thoughtSignature === "string" && part.state.thoughtSignature.length > 0
+                  ? part.state.thoughtSignature
+                  : undefined;
+            if (fallbackSig && fallbackSig !== "skip_thought_signature_validator") {
+              part.thoughtSignature = fallbackSig;
+            }
+          }
+          if (
+            part.type === "thinking" ||
+            part.type === "redacted_thinking" ||
+            part.type === "reasoning" ||
+            typeof part.thinking === "string"
+          ) {
+            part.thought = true;
+            if (typeof part.text !== "string" && typeof part.thinking === "string") {
+              part.text = part.thinking;
+            }
+            delete part.thinking;
+          }
+          delete part.type;
+          delete part.signature;
+          delete part.state;
+          if (isClaude) {
+            if (part.thoughtSignature === "skip_thought_signature_validator") {
+              delete part.thoughtSignature;
+            }
+            if (part.functionCall && part.thoughtSignature) {
+              delete part.thoughtSignature;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+function transformRequestBody(
+  body: string,
+  projectId: string,
+  effectiveModel: string,
+  requestedModel: string,
+  thinkingConfigDefaults?: ThinkingConfigDefaults,
+  isEnterprise = false,
+): { body?: string; userPromptId: string; sessionId?: string } {
+  const fallbackId = randomUUID();
+  try {
+    const parsedBody = JSON.parse(body) as Record<string, unknown>;
+    const isWrapped = typeof parsedBody.project === "string" && "request" in parsedBody;
+
+    if (isWrapped) {
+      const wrappedBody = {
+        ...parsedBody,
+        model: effectiveModel,
+      } as Record<string, unknown>;
+
+      const wrappedModel = (wrappedBody.model as string) || "";
+      if (wrappedModel.includes("-image") && !wrappedBody.requestType) {
+        wrappedBody.requestType = "image_gen";
+        wrappedBody.userAgent = wrappedBody.userAgent || "antigravity";
+      }
+
+      const { userPromptId, sessionId, requestId } = normalizeWrappedIdentifiers(wrappedBody);
+      const toolMapper = getToolMapper(sessionId);
+
+      const requestPayloadInside = wrappedBody.request as Record<string, unknown> | undefined;
+      if (requestPayloadInside) {
+        toolMapper.registerFromFunctionDeclarations(requestPayloadInside.tools);
+        toolMapper.registerFromContents(requestPayloadInside.contents);
+
+        normalizeThinking(
+          requestPayloadInside,
+          resolveDefaultThinkingConfig(thinkingConfigDefaults, requestedModel, effectiveModel),
+          thinkingConfigDefaults?.provider,
+        );
+      }
+      if (requestPayloadInside && !requestPayloadInside.labels) {
+        requestPayloadInside.labels = {
+          last_execution_id: randomUUID(),
+          last_step_index: "0",
+          model_enum: getModelEnum(effectiveModel),
+          trajectory_id: randomUUID(),
+          used_claude: isClaudeModel(effectiveModel) || isClaudeModel(requestedModel) ? "true" : "false",
+          used_claude_conservative: "false"
+        };
+      }
+
+      if (requestPayloadInside && Array.isArray(requestPayloadInside.tools)) {
+        normalizeToolSchemaTypes(requestPayloadInside.tools, toolMapper);
+      }
+      if (requestPayloadInside) {
+        normalizeToolConfig(requestPayloadInside, toolMapper);
+      }
+      if (requestPayloadInside && Array.isArray(requestPayloadInside.contents)) {
+        let contents = requestPayloadInside.contents;
+
+        normalizeToolNamesInContents(contents, toolMapper);
+        injectMissingToolCallIds(contents);
+        fixOrphanedFunctionResponses(contents);
+
+        const tracker = getTurnStateTracker();
+        let needsRecovery = false;
+        if (sessionId && tracker) {
+          const state = tracker.getState(sessionId) ?? tracker.recoverFromContents(sessionId, contents);
+          needsRecovery = state.inToolLoop && !state.turnHasThinking;
+        }
+        if (needsRecovery) {
+          contents = closeToolLoopForThinking(contents);
+        }
+
+        contents = normalizeContentsSequence(contents);
+        contents = ensureTrailingUserTurn(contents);
+
+        const latestSig = getLatestSignature(sessionId);
+        applyLatestSignature(contents, latestSig);
+        sanitizeClaudeThinkingParts(contents, effectiveModel || requestedModel, sessionId);
+        cleanProtobufParts(contents, isClaudeModel(effectiveModel || requestedModel));
+        requestPayloadInside.contents = contents;
+      }
+
+      if (isEnterprise) {
+        const entCache = getEnterpriseLicenseCache();
+        const entModel = resolveEnterpriseModelName(
+          effectiveModel || requestedModel,
+          TIER_MAPPING,
+        );
+        const reqInside: Record<string, any> = { ...(wrappedBody.request as Record<string, any>) };
+        delete reqInside.session_id;
+        delete reqInside.sessionId;
+        delete reqInside.user_prompt_id;
+        delete reqInside.userPromptId;
+        delete reqInside.request_id;
+        delete reqInside.requestId;
+        const enterpriseBody: Record<string, any> = {
+          entitlement: {
+            userTier: entCache?.userTier || "gcp-ge-plus-tier",
+            licenseLocation: entCache?.location || "global",
+          },
+          model: entModel,
+          ...reqInside,
+        };
+        if (enterpriseBody.labels && typeof enterpriseBody.labels === "object") {
+          for (const [k, v] of Object.entries(enterpriseBody.labels)) {
+            if (typeof v === "string") {
+              enterpriseBody.labels[k] = v.toLowerCase();
+            }
+          }
+        }
+        return { body: JSON.stringify(enterpriseBody), userPromptId, sessionId };
+      }
+
+      return { body: JSON.stringify(wrappedBody), userPromptId, sessionId };
+    }
+
+    const requestPayload = { ...parsedBody };
+    const { userPromptId, sessionId, requestId } = normalizeRequestPayloadIdentifiers(requestPayload);
+    const toolMapper = getToolMapper(sessionId);
+
+    toolMapper.registerFromOpenAITools(requestPayload.tools);
+    toolMapper.registerFromFunctionDeclarations(requestPayload.tools);
+    toolMapper.registerFromContents(requestPayload.contents);
+
+    if (Array.isArray(requestPayload.tools)) {
+      normalizeToolSchemaTypes(requestPayload.tools, toolMapper);
+    }
+    normalizeToolConfig(requestPayload, toolMapper);
+    transformOpenAIToolCalls(requestPayload, toolMapper);
+    if (!isClaudeModel(effectiveModel || requestedModel)) {
+      addThoughtSignaturesToFunctionCalls(requestPayload);
+    }
+    normalizeThinking(
+      requestPayload,
+      resolveDefaultThinkingConfig(thinkingConfigDefaults, requestedModel, effectiveModel),
+      thinkingConfigDefaults?.provider,
+    );
+    normalizeSystemInstruction(requestPayload);
+    normalizeCachedContent(requestPayload);
+
+    let contents = requestPayload.contents as any[];
+    if (Array.isArray(contents)) {
+      normalizeToolNamesInContents(contents, toolMapper);
+      injectMissingToolCallIds(contents);
+      fixOrphanedFunctionResponses(contents);
+
+      const tracker = getTurnStateTracker();
+      let needsRecovery = false;
+      if (sessionId && tracker) {
+        const state = tracker.getState(sessionId) ?? tracker.recoverFromContents(sessionId, contents);
+        needsRecovery = state.inToolLoop && !state.turnHasThinking;
+      }
+      if (needsRecovery) {
+        contents = closeToolLoopForThinking(contents);
+      }
+
+      contents = normalizeContentsSequence(contents);
+      contents = ensureTrailingUserTurn(contents);
+
+      const latestSig = getLatestSignature(sessionId);
+      applyLatestSignature(contents, latestSig);
+      sanitizeClaudeThinkingParts(contents, effectiveModel || requestedModel, sessionId);
+      cleanProtobufParts(contents, isClaudeModel(effectiveModel || requestedModel));
+      requestPayload.contents = contents;
+    }
+
+    if ("model" in requestPayload) {
+      delete requestPayload.model;
+    }
+
+    if (!requestPayload.labels) {
+      requestPayload.labels = {
+        last_execution_id: randomUUID(),
+        last_step_index: "0",
+        model_enum: getModelEnum(effectiveModel),
+        trajectory_id: randomUUID(),
+        used_claude: isClaudeModel(effectiveModel) || isClaudeModel(requestedModel) ? "true" : "false",
+        used_claude_conservative: "false"
+      };
+    }
+
+    if (isEnterprise) {
+      delete requestPayload.session_id;
+      delete requestPayload.sessionId;
+      delete requestPayload.user_prompt_id;
+      delete requestPayload.userPromptId;
+      delete requestPayload.request_id;
+      delete requestPayload.requestId;
+      const entCache = getEnterpriseLicenseCache();
+      const entModel = resolveEnterpriseModelName(
+        effectiveModel || requestedModel,
+        TIER_MAPPING,
+      );
+      const enterpriseBody: Record<string, any> = {
+        entitlement: {
+          userTier: entCache?.userTier || "gcp-ge-plus-tier",
+          licenseLocation: entCache?.location || "global",
+        },
+        model: entModel,
+        ...requestPayload,
+      };
+      if (enterpriseBody.labels && typeof enterpriseBody.labels === "object") {
+        for (const [k, v] of Object.entries(enterpriseBody.labels)) {
+          if (typeof v === "string") {
+            enterpriseBody.labels[k] = v.toLowerCase();
+          }
+        }
+      }
+      return { body: JSON.stringify(enterpriseBody), userPromptId, sessionId };
+    }
+
+    const isImageGen =
+      effectiveModel.includes("-image") ||
+      requestedModel.includes("-image") ||
+      (typeof requestPayload.generationConfig === "object" &&
+        requestPayload.generationConfig !== null &&
+        "imageConfig" in (requestPayload.generationConfig as Record<string, unknown>));
+
+    const wrappedBody: Record<string, unknown> = {
+      project: projectId,
+      model: effectiveModel,
+      requestId,
+      request: requestPayload,
+      userAgent: "antigravity"
+    };
+
+    if (isImageGen) {
+      wrappedBody.requestType = "image_gen";
+    } else if (
+      effectiveModel.includes("gemini-3.5-flash-lite") ||
+      effectiveModel.includes("gemini-3.1-flash-lite")
+    ) {
+      wrappedBody.requestType = "checkpoint";
+    } else if (effectiveModel.includes("gemini-2.5-flash-lite")) {
+      wrappedBody.requestType = "chat";
+    } else if (effectiveModel.includes("-lite")) {
+      wrappedBody.requestType = "web_search";
+    } else {
+      wrappedBody.requestType = "agent";
+    }
+
+    return { body: JSON.stringify(wrappedBody), userPromptId, sessionId };
+  } catch (error) {
+    const errStr = error instanceof Error ? error.stack || error.message : String(error);
+    console.warn(`[Agy Auth] Failed to transform Gemini request body: ${errStr}`);
+    return { userPromptId: fallbackId };
+  }
+}
+
+function resolveDefaultThinkingConfig(
+  thinkingConfigDefaults: ThinkingConfigDefaults | undefined,
+  requestedModel: string,
+  effectiveModel: string,
+): unknown {
+  const configured = thinkingConfigDefaults?.models
+    ? thinkingConfigDefaults.models[requestedModel] ?? thinkingConfigDefaults.models[effectiveModel]
+    : undefined;
+  if (configured !== undefined) {
+    return configured;
+  }
+
+  return getImplicitThinkingConfigForModel(requestedModel) ?? getImplicitThinkingConfigForModel(effectiveModel);
+}
+
+function normalizeThinking(
+  requestPayload: Record<string, unknown>,
+  modelThinkingConfig: unknown,
+  providerThinkingConfig: unknown,
+): void {
+  const rawGenerationConfig = isRecord(requestPayload.generationConfig)
+    ? { ...requestPayload.generationConfig }
+    : undefined;
+  const mergedThinkingConfig = mergeThinkingConfigs(
+    providerThinkingConfig,
+    modelThinkingConfig,
+    requestPayload.thinkingConfig,
+    rawGenerationConfig?.thinkingConfig,
+  );
+
+  if (Object.prototype.hasOwnProperty.call(requestPayload, "thinkingConfig")) {
+    delete requestPayload.thinkingConfig;
+  }
+
+  const normalizedThinkingConfig = normalizeThinkingConfig(mergedThinkingConfig);
+
+  if (!normalizedThinkingConfig) {
+    if (rawGenerationConfig) {
+      requestPayload.generationConfig = rawGenerationConfig;
+    }
+    return;
+  }
+
+  requestPayload.generationConfig = {
+    ...(rawGenerationConfig ?? {}),
+    thinkingConfig: normalizedThinkingConfig,
+  };
+}
+
+function getImplicitThinkingConfigForModel(modelId: string): unknown {
+  const normalizedModelId = modelId.toLowerCase();
+  if (!normalizedModelId.startsWith("gemini-") || normalizedModelId.includes("image")) {
+    return undefined;
+  }
+
+  return {
+    thinkingBudget: normalizedModelId.endsWith("-low") ? 1000 : 10001,
+    includeThoughts: true,
+  };
+}
+
+function mergeThinkingConfigs(...configs: unknown[]): Record<string, unknown> | undefined {
+  const merged: Record<string, unknown> = {};
+  for (const config of configs) {
+    const normalized = normalizeThinkingConfig(config);
+    if (!normalized) {
+      continue;
+    }
+    for (const [key, value] of Object.entries(normalized)) {
+      if (value !== undefined) {
+        merged[key] = value;
+      }
+    }
+  }
+  return Object.keys(merged).length > 0 ? merged : undefined;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return !!value && typeof value === "object" && !Array.isArray(value);
+}
+
+function normalizeToolSchemaTypes(tools: unknown, toolMapper?: ToolMapper): void {
+  if (!Array.isArray(tools)) return;
+
+  const validSchemaKeys = new Set([
+    "type", "description", "properties", "items",
+    "required", "enum", "nullable", "format"
+  ]);
+
+  const sanitizeSchema = (obj: any) => {
+    if (!obj || typeof obj !== "object") return;
+    if (Array.isArray(obj)) {
+      obj.forEach(sanitizeSchema);
+      return;
+    }
+
+    if (!obj.type && (Array.isArray(obj.anyOf) || Array.isArray(obj.oneOf))) {
+      const arr = obj.anyOf || obj.oneOf;
+      if (arr.length > 0 && arr[0] && typeof arr[0].type === "string") {
+        obj.type = arr[0].type;
+        if (arr[0].items) {
+          obj.items = arr[0].items;
+        }
+      } else {
+        obj.type = "STRING";
+      }
+    }
+
+    if (typeof obj.type === "string") {
+      const t = obj.type.toLowerCase();
+      if (["string", "number", "integer", "boolean", "array", "object"].includes(t)) {
+        obj.type = t.toUpperCase();
+      }
+    }
+
+    if (Array.isArray(obj.enum)) {
+      const sanitizedEnum = Array.from(
+        new Set(
+          obj.enum
+            .filter((v: unknown) => v !== null && v !== undefined)
+            .map((v: unknown) => String(v))
+        )
+      );
+      if (sanitizedEnum.length > 0) {
+        obj.enum = sanitizedEnum;
+        // Gemini Protobuf Schema requires enum elements to be strings.
+        // If the property was typed as BOOLEAN, adjust type to STRING so Gemini's schema validation accepts it.
+        if (obj.type === "BOOLEAN") {
+          obj.type = "STRING";
+        }
+      } else {
+        delete obj.enum;
+      }
+    } else if ("enum" in obj) {
+      delete obj.enum;
+    }
+
+    if (obj.properties && typeof obj.properties === "object") {
+      Object.values(obj.properties).forEach(sanitizeSchema);
+    }
+    if (obj.items && typeof obj.items === "object") {
+      sanitizeSchema(obj.items);
+    }
+
+    for (const key of Object.keys(obj)) {
+      if (!validSchemaKeys.has(key)) {
+        delete obj[key];
+      }
+    }
+  };
+
+  for (const tool of tools) {
+    if (tool && Array.isArray(tool.functionDeclarations)) {
+      for (const fn of tool.functionDeclarations) {
+        if (fn && typeof fn.name === "string") {
+          fn.name = toolMapper ? toolMapper.toGemini(fn.name) : sanitizeToolName(fn.name);
+        }
+        if (fn) {
+          if (!fn.parameters) {
+            fn.parameters = fn.parameters_json_schema ?? fn.parametersJsonSchema;
+          }
+          if (!fn.parameters) {
+            fn.parameters = { type: "OBJECT", properties: {} };
+          }
+          delete (fn as Record<string, unknown>).parameters_json_schema;
+          delete (fn as Record<string, unknown>).parametersJsonSchema;
+          sanitizeSchema(fn.parameters);
+        }
+      }
+    }
+  }
+}
+
+function normalizeToolConfig(requestPayload: Record<string, unknown>, toolMapper: ToolMapper): void {
+  const toolConfig = (requestPayload.toolConfig ?? requestPayload.tool_config) as Record<string, unknown> | undefined;
+  if (!toolConfig || typeof toolConfig !== "object") return;
+
+  const fnCallingConfig = (toolConfig.functionCallingConfig ?? toolConfig.function_calling_config) as Record<string, unknown> | undefined;
+  if (!fnCallingConfig || typeof fnCallingConfig !== "object") return;
+
+  const allowedNames = (fnCallingConfig.allowedFunctionNames ?? fnCallingConfig.allowed_function_names) as string[] | undefined;
+  if (Array.isArray(allowedNames)) {
+    const mapped = allowedNames.map((name) => (typeof name === "string" ? toolMapper.toGemini(name) : name));
+    if (fnCallingConfig.allowedFunctionNames) {
+      fnCallingConfig.allowedFunctionNames = mapped;
+    }
+    if (fnCallingConfig.allowed_function_names) {
+      fnCallingConfig.allowed_function_names = mapped;
+    }
+  }
+}
+
+function normalizeToolNamesInContents(contents: any[], toolMapper: ToolMapper): void {
+  if (!Array.isArray(contents)) return;
+  for (const msg of contents) {
+    if (!msg || typeof msg !== "object" || !Array.isArray(msg.parts)) continue;
+    for (const part of msg.parts) {
+      if (!part || typeof part !== "object") continue;
+      if (part.functionCall && typeof part.functionCall.name === "string") {
+        part.functionCall.name = toolMapper.toGemini(part.functionCall.name);
+      }
+      if (part.functionResponse && typeof part.functionResponse.name === "string") {
+        part.functionResponse.name = toolMapper.toGemini(part.functionResponse.name);
+      }
+    }
+  }
+}
+
+function normalizeSystemInstruction(requestPayload: Record<string, unknown>): void {
+  if ("system_instruction" in requestPayload) {
+    requestPayload.systemInstruction = requestPayload.system_instruction;
+    delete requestPayload.system_instruction;
+  }
+}
+
+function normalizeCachedContent(requestPayload: Record<string, unknown>): void {
+  const extraBody =
+    requestPayload.extra_body && typeof requestPayload.extra_body === "object"
+      ? (requestPayload.extra_body as Record<string, unknown>)
+      : undefined;
+  const cachedContentFromExtra = extraBody?.cached_content ?? extraBody?.cachedContent;
+  const cachedContent =
+    (requestPayload.cached_content as string | undefined) ??
+    (requestPayload.cachedContent as string | undefined) ??
+    (cachedContentFromExtra as string | undefined);
+
+  if (cachedContent) {
+    requestPayload.cachedContent = cachedContent;
+  }
+
+  delete requestPayload.cached_content;
+  if (!extraBody) {
+    return;
+  }
+
+  delete extraBody.cached_content;
+  delete extraBody.cachedContent;
+  if (Object.keys(extraBody).length === 0) {
+    delete requestPayload.extra_body;
+  }
+}
+
+
+
+export function ensureTrailingUserTurn(contents: any[]): any[] {
+  if (!Array.isArray(contents) || contents.length === 0) {
+    return contents;
+  }
+  const last = contents[contents.length - 1];
+  if (last && (last.role === "model" || last.role === "assistant")) {
+    return [...contents, { role: "user", parts: [{ text: "[Continue]" }] }];
+  }
+  return contents;
+}
+
+function normalizeContentsSequence(contents: any[]): any[] {
+  const merged: any[] = [];
+  for (const msg of contents) {
+    if (!msg || !msg.role || !Array.isArray(msg.parts)) {
+      continue;
+    }
+    const validParts = msg.parts.filter((p: any) => p != null);
+    if (validParts.length === 0) {
+      continue;
+    }
+
+    const last = merged[merged.length - 1];
+    if (last && last.role === msg.role) {
+      last.parts.push(...validParts);
+    } else {
+      merged.push({ ...msg, parts: validParts });
+    }
+  }
+  return merged;
+}
+
+function injectMissingToolCallIds(contents: any[]): void {
+  // Map of function name to array of missing IDs we generated for it
+  const missingIdsByName = new Map<string, string[]>();
+
+  for (const content of contents) {
+    if (!content || typeof content !== "object" || !Array.isArray(content.parts)) {
+      continue;
+    }
+
+    for (const part of content.parts) {
+      if (!part || typeof part !== "object") {
+        continue;
+      }
+
+      if (part.functionCall && typeof part.functionCall.name === "string") {
+        if (!part.functionCall.id) {
+          const generatedId = randomUUID();
+          part.functionCall.id = generatedId;
+
+          let ids = missingIdsByName.get(part.functionCall.name);
+          if (!ids) {
+            ids = [];
+            missingIdsByName.set(part.functionCall.name, ids);
+          }
+          ids.push(generatedId);
+        }
+      }
+
+      if (part.functionResponse && typeof part.functionResponse.name === "string") {
+        if (!part.functionResponse.id) {
+          const ids = missingIdsByName.get(part.functionResponse.name);
+          if (ids && ids.length > 0) {
+            part.functionResponse.id = ids.shift();
+          } else {
+             part.functionResponse.id = randomUUID();
+          }
+        }
+      }
+    }
+  }
+}
+
+function applyLatestSignature(contents: any[], latestSig: string | undefined): void {
+  // Collect all function call parts in chronological order
+  const allFunctionParts: any[] = [];
+  for (const content of contents) {
+    if (content && typeof content === "object" && Array.isArray(content.parts)) {
+      for (const part of content.parts) {
+        if (part && typeof part === "object" && part.functionCall) {
+          // If thoughtSignature was mistakenly placed inside functionCall, migrate or clean it up
+          if (part.functionCall.thoughtSignature) {
+            if (!part.thoughtSignature || part.thoughtSignature === "skip_thought_signature_validator") {
+              part.thoughtSignature = part.functionCall.thoughtSignature;
+            }
+            delete part.functionCall.thoughtSignature;
+          }
+          allFunctionParts.push(part);
+        }
+      }
+    }
+  }
+
+  // Only apply the latest signature to the VERY LAST function call part
+  if (allFunctionParts.length > 0 && latestSig) {
+    const lastPart = allFunctionParts[allFunctionParts.length - 1];
+    if (!lastPart.thoughtSignature || lastPart.thoughtSignature === "skip_thought_signature_validator") {
+      lastPart.thoughtSignature = latestSig;
+    }
+  }
+}
+
+function fixOrphanedFunctionResponses(contents: any[]): void {
+  const validCallIds = new Set<string>();
+
+  for (const content of contents) {
+    if (!content || typeof content !== "object" || !Array.isArray(content.parts)) {
+      continue;
+    }
+    for (const part of content.parts) {
+      if (part && typeof part === "object" && part.functionCall && part.functionCall.id) {
+        validCallIds.add(part.functionCall.id);
+      }
+    }
+  }
+
+  for (const content of contents) {
+    if (!content || typeof content !== "object" || !Array.isArray(content.parts)) {
+      continue;
+    }
+    for (const part of content.parts) {
+      if (part && typeof part === "object" && part.functionResponse) {
+        const id = part.functionResponse.id;
+        if (!id || !validCallIds.has(id)) {
+          const name = part.functionResponse.name || "unknown_tool";
+          const responseObj = part.functionResponse.response || {};
+
+          let responseStr = "";
+          try {
+            responseStr = typeof responseObj === "string" ? responseObj : JSON.stringify(responseObj);
+          } catch (e) {
+            responseStr = String(responseObj);
+          }
+
+          part.text = `[Orphaned Tool Response for ${name}]: ${responseStr}`;
+          delete part.functionResponse;
+        }
+      }
+    }
+  }
+}

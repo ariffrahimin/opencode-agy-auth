@@ -1,0 +1,12 @@
+node_modules/
+coverage/
+agy_chat_log/
+.env
+.vitest/
+docs/superpowers
+.worktrees/
+.superpowers/
+
+# pnpm
+pnpm-lock.yaml
+pnpm-workspace.yaml

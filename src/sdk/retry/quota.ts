@@ -1,0 +1,322 @@
+import { retrieveUserQuotaSummary } from "../fetch_quota";
+import type { QuotaSummaryBucket, RetrieveUserQuotaSummaryResponse } from "../../plugin/project/types";
+
+interface GoogleRpcErrorInfo {
+  "@type"?: string;
+  reason?: string;
+  domain?: string;
+  metadata?: Record<string, string>;
+}
+
+interface GoogleRpcQuotaViolation {
+  quotaId?: string;
+  description?: string;
+}
+
+interface GoogleRpcQuotaFailure {
+  "@type"?: string;
+  violations?: GoogleRpcQuotaViolation[];
+}
+
+interface GoogleRpcRetryInfo {
+  "@type"?: string;
+  retryDelay?: string | { seconds?: number; nanos?: number };
+}
+
+export interface QuotaContext {
+  terminal: boolean;
+  retryDelayMs?: number;
+  reason?: string;
+}
+
+const CLOUDCODE_DOMAINS = new Set([
+  "cloudcode-pa.googleapis.com",
+  "staging-cloudcode-pa.googleapis.com",
+  "autopush-cloudcode-pa.googleapis.com",
+  "cloudaicompanion.googleapis.com",
+  "daily-cloudcode-pa.googleapis.com",
+  "businessaicode.googleapis.com",
+]);
+
+/**
+ * NOTE: Special Design - Granular 429 Error Classification and Retry Strategy
+ * Traditional network retry modules usually treat 429 errors uniformly as rate-limiting for retries or throwing errors.
+ * Here we parse it granularly:
+ * 1. Differentiate between "Account physical quota exhausted" and "Model instantaneous capacity overloaded (MODEL_CAPACITY_EXHAUSTED)".
+ * 2. If it's physical quota exhaustion, it's considered an unretriable terminal state to avoid meaningless network requests;
+ *    If it's a momentary overload of Google's backend model capacity, it's considered retriable, parses RetryInfo delay from response, and notifies the upper layer (showing a Toast in TUI, backing off, and retrying).
+ */
+export async function classifyQuotaResponse(response: Response): Promise<QuotaContext | null> {
+  const payload = await parseErrorBody(response);
+  if (!payload) {
+    return null;
+  }
+
+  const details = Array.isArray(payload.details) ? payload.details : [];
+  const retryInfo = details.find(
+    (detail): detail is GoogleRpcRetryInfo =>
+      isObject(detail) &&
+      detail["@type"] === "type.googleapis.com/google.rpc.RetryInfo",
+  );
+  const retryDelayMs =
+    (retryInfo?.retryDelay ? parseRetryDelayValue(retryInfo.retryDelay) : null) ??
+    parseRetryDelayFromMessage(payload.message ?? "") ??
+    undefined;
+
+  const errorInfo = details.find(
+    (detail): detail is GoogleRpcErrorInfo =>
+      isObject(detail) &&
+      detail["@type"] === "type.googleapis.com/google.rpc.ErrorInfo",
+  );
+
+  if (errorInfo?.domain && !CLOUDCODE_DOMAINS.has(errorInfo.domain)) {
+    return null;
+  }
+  if (errorInfo?.reason === "QUOTA_EXHAUSTED") {
+    return { terminal: true, retryDelayMs, reason: errorInfo.reason };
+  }
+  if (errorInfo?.reason === "RATE_LIMIT_EXCEEDED") {
+    return { terminal: false, retryDelayMs: retryDelayMs ?? 10_000, reason: errorInfo.reason };
+  }
+  if (errorInfo?.reason === "MODEL_CAPACITY_EXHAUSTED") {
+    return {
+      terminal: retryDelayMs === undefined,
+      retryDelayMs,
+      reason: errorInfo.reason,
+    };
+  }
+
+  const quotaFailure = details.find(
+    (detail): detail is GoogleRpcQuotaFailure =>
+      isObject(detail) &&
+      detail["@type"] === "type.googleapis.com/google.rpc.QuotaFailure",
+  );
+  if (quotaFailure?.violations?.length) {
+    const allTexts = quotaFailure.violations
+      .flatMap((violation) => [violation.quotaId ?? "", violation.description ?? ""])
+      .join(" ")
+      .toLowerCase();
+
+    if (allTexts.includes("perday") || allTexts.includes("daily") || allTexts.includes("per day")) {
+      return { terminal: true, retryDelayMs, reason: errorInfo?.reason };
+    }
+    if (allTexts.includes("perminute") || allTexts.includes("per minute")) {
+      return { terminal: false, retryDelayMs: retryDelayMs ?? 60_000, reason: errorInfo?.reason };
+    }
+    return { terminal: false, retryDelayMs, reason: errorInfo?.reason };
+  }
+
+  const quotaLimit = errorInfo?.metadata?.quota_limit?.toLowerCase() ?? "";
+  if (quotaLimit.includes("perminute") || quotaLimit.includes("per minute")) {
+    return { terminal: false, retryDelayMs: retryDelayMs ?? 60_000, reason: errorInfo?.reason };
+  }
+
+  return { terminal: false, retryDelayMs, reason: errorInfo?.reason };
+}
+
+/**
+ * Extracts the RetryInfo delay hint directly from the error payload.
+ */
+export async function parseRetryDelayFromBody(response: Response): Promise<number | null> {
+  const payload = await parseErrorBody(response);
+  if (!payload) {
+    return null;
+  }
+
+  const details = Array.isArray(payload.details) ? payload.details : [];
+  const retryInfo = details.find(
+    (detail): detail is GoogleRpcRetryInfo =>
+      isObject(detail) &&
+      detail["@type"] === "type.googleapis.com/google.rpc.RetryInfo",
+  );
+  if (retryInfo?.retryDelay) {
+    const delayMs = parseRetryDelayValue(retryInfo.retryDelay);
+    if (delayMs !== null) {
+      return delayMs;
+    }
+  }
+
+  if (typeof payload.message === "string") {
+    return parseRetryDelayFromMessage(payload.message);
+  }
+  return null;
+}
+
+function parseRetryDelayValue(value: string | { seconds?: number; nanos?: number }): number | null {
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    if (!trimmed) {
+      return null;
+    }
+    if (trimmed.endsWith("ms")) {
+      const milliseconds = Number(trimmed.slice(0, -2));
+      return Number.isFinite(milliseconds) && milliseconds > 0 ? Math.round(milliseconds) : null;
+    }
+    const match = trimmed.match(/^([\d.]+)s$/);
+    if (!match?.[1]) {
+      return null;
+    }
+    const seconds = Number(match[1]);
+    return Number.isFinite(seconds) && seconds > 0 ? Math.round(seconds * 1000) : null;
+  }
+
+  const seconds = typeof value.seconds === "number" ? value.seconds : 0;
+  const nanos = typeof value.nanos === "number" ? value.nanos : 0;
+  if (!Number.isFinite(seconds) || !Number.isFinite(nanos)) {
+    return null;
+  }
+  const totalMs = Math.round(seconds * 1000 + nanos / 1e6);
+  return totalMs > 0 ? totalMs : null;
+}
+
+function parseRetryDelayFromMessage(message: string): number | null {
+  const retryMatch = message.match(/Please retry in ([0-9.]+(?:ms|s))/i);
+  if (retryMatch?.[1]) {
+    return parseRetryDelayValue(retryMatch[1]);
+  }
+
+  const afterMatch = message.match(/after\s+([0-9.]+(?:ms|s))/i);
+  if (afterMatch?.[1]) {
+    return parseRetryDelayValue(afterMatch[1]);
+  }
+
+  return null;
+}
+
+async function parseErrorBody(
+  response: Response,
+): Promise<{ message?: string; details?: unknown[] } | null> {
+  let text = "";
+  try {
+    text = await response.clone().text();
+  } catch {
+    return null;
+  }
+  if (!text) {
+    return null;
+  }
+
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(text);
+  } catch {
+    return null;
+  }
+
+  const normalized = normalizeErrorEnvelope(parsed);
+  if (!normalized || !isObject(normalized.error)) {
+    return null;
+  }
+
+  const error = normalized.error as Record<string, unknown>;
+  return {
+    message: typeof error.message === "string" ? error.message : undefined,
+    details: Array.isArray(error.details) ? error.details : undefined,
+  };
+}
+
+function isObject(value: unknown): value is Record<string, any> {
+  return !!value && typeof value === "object";
+}
+
+function normalizeErrorEnvelope(parsed: unknown): Record<string, unknown> | null {
+  if (Array.isArray(parsed)) {
+    const first = parsed[0];
+    return isObject(first) ? first : null;
+  }
+  return isObject(parsed) ? parsed : null;
+}
+
+export const MAX_QUOTA_RESET_WAIT_MS = 7_200_000; // 7200 seconds (2 hours)
+
+export function findResetTimeForModel(
+  summary: RetrieveUserQuotaSummaryResponse | null | undefined,
+  model?: string,
+): string | null {
+  if (!summary) return null;
+
+  const normalize = (str: string) => str.toLowerCase().replace(/[^a-z0-9]/g, "");
+  const modelNorm = model ? normalize(model) : "";
+
+  let targetGroups = summary.groups ?? [];
+  if (modelNorm && targetGroups.length > 0) {
+    const matched = targetGroups.filter((g) => {
+      const gName = normalize(g.displayName ?? "");
+      return gName.includes(modelNorm) || modelNorm.includes(gName);
+    });
+    if (matched.length > 0) {
+      targetGroups = matched;
+    }
+  }
+
+  const allBuckets: QuotaSummaryBucket[] = [];
+  for (const group of targetGroups) {
+    if (group.buckets) {
+      allBuckets.push(...group.buckets);
+    }
+  }
+  if (allBuckets.length === 0 && summary.buckets) {
+    allBuckets.push(...summary.buckets);
+  }
+
+  const now = Date.now();
+  const validResetBuckets = allBuckets.filter((b) => {
+    if (!b.resetTime) return false;
+    const t = new Date(b.resetTime).getTime();
+    return !Number.isNaN(t) && t > now;
+  });
+
+  if (validResetBuckets.length === 0) {
+    return null;
+  }
+
+  const exhaustedFiveHour = validResetBuckets.find(
+    (b) => (b.remainingFraction === 0 || b.disabled) && b.window?.toUpperCase() === "FIVE_HOUR",
+  );
+  if (exhaustedFiveHour?.resetTime) return exhaustedFiveHour.resetTime;
+
+  const exhaustedAny = validResetBuckets.find((b) => b.remainingFraction === 0 || b.disabled);
+  if (exhaustedAny?.resetTime) return exhaustedAny.resetTime;
+
+  const fiveHour = validResetBuckets.find((b) => b.window?.toUpperCase() === "FIVE_HOUR");
+  if (fiveHour?.resetTime) return fiveHour.resetTime;
+
+  validResetBuckets.sort(
+    (a, b) => new Date(a.resetTime!).getTime() - new Date(b.resetTime!).getTime(),
+  );
+  return validResetBuckets[0]?.resetTime ?? null;
+}
+
+export async function resolveQuotaResetDelay(
+  accessToken: string,
+  projectId: string,
+  model?: string,
+  userAgentModel?: string,
+): Promise<{ waitMs: number; resetTime: string } | null> {
+  try {
+    const summary = await retrieveUserQuotaSummary(accessToken, projectId, userAgentModel);
+    if (!summary) return null;
+
+    const resetTime = findResetTimeForModel(summary, model);
+    if (!resetTime) return null;
+
+    const resetTimestamp = new Date(resetTime).getTime();
+    if (Number.isNaN(resetTimestamp)) return null;
+
+    const waitMs = resetTimestamp - Date.now() + 1000;
+    if (waitMs <= 0 || waitMs > MAX_QUOTA_RESET_WAIT_MS) {
+      return null;
+    }
+
+    return { waitMs, resetTime };
+  } catch {
+    return null;
+  }
+}
+
+export const retryInternals = {
+  parseRetryDelayValue,
+  parseRetryDelayFromMessage,
+  findResetTimeForModel,
+  resolveQuotaResetDelay,
+};
