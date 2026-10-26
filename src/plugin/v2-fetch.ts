@@ -17,7 +17,7 @@ import { refreshAccessToken } from './token';
 import { ensureProjectContext } from './project';
 import { getSafeHeader, setSafeHeaders, toUrlString } from './headers';
 import { resolveModelTier } from './tier';
-import { loadStoredAuthFromJson } from './v2-storage';
+import { loadStoredAuthFromJson, saveStoredAuthToJson } from './v2-storage';
 
 export function createV2FetchInterceptor(getAuthSnapshot?: () => Promise<any> | any) {
   return async function agyV2Fetch(input: RequestInfo, init?: RequestInit): Promise<Response> {
@@ -76,7 +76,17 @@ export function createV2FetchInterceptor(getAuthSnapshot?: () => Promise<any> | 
     try {
       projectContext = await ensureProjectContext(
         authRecord,
-        { auth: { set: async () => {} } } as any,
+        {
+          auth: {
+            set: async ({ body }: any) => {
+              if (body) {
+                try {
+                  saveStoredAuthToJson(body);
+                } catch {}
+              }
+            }
+          }
+        } as any,
         undefined,
         requestUserAgentModel
       );

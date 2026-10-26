@@ -377,14 +377,70 @@ function accessTokenExpired(auth) {
 }
 
 // src/plugin/provider.ts
+import { execFileSync } from "child_process";
 import { existsSync as existsSync2, readFileSync as readFileSync2 } from "fs";
+var cachedKeychainProjectId = void 0;
+function readProjectFromDiskConfigs(homeDir) {
+  const candidates = [
+    `${process.cwd()}/.opencode/opencode.json`,
+    `${process.cwd()}/.opencode/opencode.jsonc`,
+    `${process.cwd()}/opencode.json`,
+    `${process.cwd()}/opencode.jsonc`,
+    ...homeDir ? [
+      `${homeDir}/.config/opencode/opencode.json`,
+      `${homeDir}/.config/opencode/opencode.jsonc`
+    ] : []
+  ];
+  for (const filePath of candidates) {
+    try {
+      if (!existsSync2(filePath)) continue;
+      const raw = readFileSync2(filePath, "utf8").replace(/^\s*\/\/.*$/gm, "").replace(/,(\s*[}\]])/g, "$1");
+      const parsed = JSON.parse(raw);
+      const fromAgy = resolveConfiguredProjectIdFromConfig(parsed);
+      if (fromAgy) return fromAgy;
+      const googleCfg = parsed?.providers?.google || parsed?.provider?.google;
+      const fromGoogle = normalizeProjectId(googleCfg?.settings?.projectId) ?? normalizeProjectId(googleCfg?.options?.projectId);
+      if (fromGoogle) return fromGoogle;
+    } catch {
+    }
+  }
+  return void 0;
+}
+function readProjectFromAgyKeychain() {
+  if (cachedKeychainProjectId !== void 0) {
+    return cachedKeychainProjectId ?? void 0;
+  }
+  cachedKeychainProjectId = null;
+  if (process.platform !== "darwin") {
+    return void 0;
+  }
+  try {
+    const out = execFileSync(
+      "security",
+      ["find-generic-password", "-s", "gemini", "-a", "antigravity", "-w"],
+      { encoding: "utf8", timeout: 1500, stdio: ["ignore", "pipe", "ignore"] }
+    ).trim();
+    const jsonStr = out.startsWith("go-keyring-base64:") ? Buffer.from(out.slice("go-keyring-base64:".length), "base64").toString("utf8") : out;
+    const data = JSON.parse(jsonStr);
+    const proj = normalizeProjectId(data?.project_id);
+    if (proj) {
+      cachedKeychainProjectId = proj;
+      return proj;
+    }
+  } catch {
+  }
+  return void 0;
+}
 function resolveConfiguredProjectId(input = {}) {
   const env = input.env ?? process.env;
+  let diskConfigProject;
   let gcpProjectFromFile;
+  let keychainProject;
   const isTestEnv = (process.env.VITEST || process.env.NODE_ENV === "test") && process.env.OPENCODE_AGY_TEST_ENTERPRISE !== "1";
   if (!isTestEnv) {
+    const homeDir = env.HOME || env.USERPROFILE || "";
+    diskConfigProject = readProjectFromDiskConfigs(homeDir);
     try {
-      const homeDir = env.HOME || env.USERPROFILE || "";
       if (homeDir) {
         const p = `${homeDir}/.gemini/antigravity-cli/settings.json`;
         if (existsSync2(p)) {
@@ -394,8 +450,11 @@ function resolveConfiguredProjectId(input = {}) {
       }
     } catch {
     }
+    if (!diskConfigProject && !gcpProjectFromFile) {
+      keychainProject = readProjectFromAgyKeychain();
+    }
   }
-  return normalizeProjectId(env.OPENCODE_AGY_PROJECT_ID) ?? resolveConfiguredProjectIdFromProvider(input.provider) ?? normalizeProjectId(input.configProjectId) ?? resolveConfiguredProjectIdFromConfig(input.config) ?? normalizeProjectId(gcpProjectFromFile) ?? normalizeProjectId(env.GOOGLE_CLOUD_PROJECT) ?? normalizeProjectId(env.GOOGLE_CLOUD_PROJECT_ID);
+  return normalizeProjectId(env.OPENCODE_AGY_PROJECT_ID) ?? resolveConfiguredProjectIdFromProvider(input.provider) ?? normalizeProjectId(input.configProjectId) ?? resolveConfiguredProjectIdFromConfig(input.config) ?? normalizeProjectId(diskConfigProject) ?? normalizeProjectId(gcpProjectFromFile) ?? normalizeProjectId(keychainProject) ?? normalizeProjectId(env.GOOGLE_CLOUD_PROJECT) ?? normalizeProjectId(env.GOOGLE_CLOUD_PROJECT_ID);
 }
 function resolveConfiguredProjectIdFromProvider(provider) {
   if (!provider || typeof provider !== "object") {
@@ -21433,8 +21492,18 @@ function createV2FetchInterceptor(getAuthSnapshot) {
     try {
       projectContext = await ensureProjectContext(
         authRecord,
-        { auth: { set: async () => {
-        } } },
+        {
+          auth: {
+            set: async ({ body }) => {
+              if (body) {
+                try {
+                  saveStoredAuthToJson(body);
+                } catch {
+                }
+              }
+            }
+          }
+        },
         void 0,
         requestUserAgentModel
       );
@@ -21591,8 +21660,18 @@ function createV2HttpRequestHook(state = {}) {
         try {
           projectContext = await ensureProjectContext(
             authRecord,
-            { auth: { set: async () => {
-            } } },
+            {
+              auth: {
+                set: async ({ body }) => {
+                  if (body) {
+                    try {
+                      saveStoredAuthToJson(body);
+                    } catch {
+                    }
+                  }
+                }
+              }
+            },
             void 0,
             modelName
           );

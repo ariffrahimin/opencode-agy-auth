@@ -150,7 +150,17 @@ export function createV2HttpRequestHook(state: V2SessionHooksState = {}) {
         try {
           projectContext = await ensureProjectContext(
             authRecord,
-            { auth: { set: async () => {} } } as any,
+            {
+              auth: {
+                set: async ({ body }: any) => {
+                  if (body) {
+                    try {
+                      saveStoredAuthToJson(body);
+                    } catch {}
+                  }
+                }
+              }
+            } as any,
             undefined,
             modelName
           );
