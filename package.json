@@ -44,7 +44,7 @@
     "smoke:node-import": "node -e \"import('./dist/index.js').then(() => console.log('ok')).catch((error) => { console.error(error); process.exit(1); })\""
   },
   "devDependencies": {
-    "@opencode-ai/sdk": "^1.19.4",
+    "@opencode-ai/sdk": "^1.19.5",
     "@types/node": "^26.6.5",
     "@vitest/coverage-v8": "^5.0.5",
     "tsup": "^9.0.0",
