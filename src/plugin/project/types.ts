@@ -1,3 +1,5 @@
+import { AGY_CLI_VERSION } from "../../sdk/agy-cli-version";
+
 export const FREE_TIER_ID = "free-tier";
 export const LEGACY_TIER_ID = "legacy-tier";
 
@@ -39,7 +41,7 @@ export async function checkOrGetEnterpriseLicense(
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
-        "User-Agent": "antigravity/1.4.6 darwin/arm64",
+        "User-Agent": `antigravity/${AGY_CLI_VERSION} darwin/arm64`,
       },
       body: "{}",
     });

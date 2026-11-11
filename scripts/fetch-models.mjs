@@ -41,7 +41,7 @@ const AGY_CLIENT_SECRET = [
   'K58FWR486LdLJ1mLB8sXC4z6qDAf'
 ].join('-');
 const DEFAULT_ENDPOINT = 'https://daily-cloudcode-pa.googleapis.com';
-const AGY_API_VERSION = '1.4.6';
+const AGY_API_VERSION = '1.5.5';
 
 function parseArgs(argv) {
   const args = { endpoint: null, output: null, verbose: false };
@@ -176,8 +176,41 @@ async function main() {
   const accessToken = token.access_token;
   logVerbose(args, `[fetch-models] got access token: ${accessToken.substring(0, 10)}...`);
 
+  let enterpriseLicense = null;
+  try {
+    const licUrl = `https://businessaicode.googleapis.com/v1beta/projects/${managedProjectId}/locations/global:selfAssignLicense`;
+    const licResp = await fetch(licUrl, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'User-Agent': `antigravity/${AGY_API_VERSION} darwin/arm64`,
+        'Content-Type': 'application/json',
+      },
+      body: '{}',
+    });
+    if (licResp.ok) {
+      const licData = await licResp.json();
+      if (licData?.license?.userTier) {
+        enterpriseLicense = {
+          userTier: licData.license.userTier,
+          location: licData.license.location || 'global',
+        };
+        logVerbose(args, `[fetch-models] detected enterprise license: ${JSON.stringify(enterpriseLicense)}`);
+      }
+    }
+  } catch (err) {
+    logVerbose(args, `[fetch-models] enterprise license check skipped: ${err.message}`);
+  }
+
   const url = `${endpoint}/v1internal:fetchAvailableModels`;
-  const body = JSON.stringify({ project: managedProjectId });
+  const payload = enterpriseLicense
+    ? {
+        project: managedProjectId,
+        location: enterpriseLicense.location,
+        entitlement: { userTier: enterpriseLicense.userTier },
+      }
+    : { project: managedProjectId };
+  const body = JSON.stringify(payload);
   logVerbose(args, `[fetch-models] calling ${url} with body: ${body}`);
 
   let data;

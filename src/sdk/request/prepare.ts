@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 
 import { AGY_CODE_ASSIST_ENDPOINT } from "../../constants";
 import modelsJson from "../../../models.json";
+import { AGY_CLI_VERSION } from "../agy-cli-version";
 import { normalizeThinkingConfig } from "../request-helpers";
 import { buildAgyCliUserAgent } from "../user-agent";
 import { normalizeRequestPayloadIdentifiers, normalizeWrappedIdentifiers } from "./identifiers";
@@ -103,7 +104,7 @@ export function prepareAgyRequest(
   }
 
   const userAgent = isEnterprise
-    ? "antigravity/1.4.6 darwin/arm64"
+    ? `antigravity/${AGY_CLI_VERSION} darwin/arm64`
     : buildAgyCliUserAgent(effectiveModel);
   headers.set("User-Agent", userAgent);
 
@@ -136,15 +137,15 @@ export function getModelEnum(modelName: string): string {
       return entry.newModelEnum;
     }
   }
+  if (LEGACY_MODEL_ENUM_FALLBACKS[modelName]) {
+    return LEGACY_MODEL_ENUM_FALLBACKS[modelName];
+  }
   const models = (modelsJson as any).models;
   if (models && models[modelName] && models[modelName].model) {
     return models[modelName].model;
   }
   if (deprecated && deprecated[modelName] && deprecated[modelName].oldModelEnum) {
     return deprecated[modelName].oldModelEnum;
-  }
-  if (LEGACY_MODEL_ENUM_FALLBACKS[modelName]) {
-    return LEGACY_MODEL_ENUM_FALLBACKS[modelName];
   }
   return "MODEL_PLACEHOLDER_M16";
 }

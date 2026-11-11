@@ -10,7 +10,7 @@ An [OpenCode](https://opencode.ai/) authentication plugin that enables seamless 
 - **Gemini Enterprise Support (`businessaicode.googleapis.com`)**: Automatically discovers your Gemini Enterprise Plus / Standard license via `:selfAssignLicense`, attaches your enterprise `entitlement` (`userTier`, `licenseLocation`), and routes requests to `businessaicode.googleapis.com/v1beta`.
 - **Zero-Config `agy` CLI Project Detection**: Automatically reads `~/.gemini/antigravity-cli/settings.json` to detect your configured `gcp.project` and `gcp.location`.
 - **OAuth 2.0 Integration**: Uses Antigravity's OAuth flows for authentication.
-- **Enterprise & Consumer Models**: Supports `gemini-4-argon`, `gemini-3.8-flash`, `gemini-3.7-flash`, `gemini-3.6-flash`, `gemini-3.1-pro`, `claude-opus-5-5`, and `claude-sonnet-5-5` across `low`, `medium`, and `high` reasoning tiers.
+- **Enterprise & Consumer Models**: Supports `gemini-4-carbon`, `gemini-4-argon`, `gemini-3.8-flash`, `gemini-3.7-flash`, `gemini-3.6-flash`, `gemini-3.1-pro`, `claude-opus-5-5`, and `claude-sonnet-5-5` across `low`, `medium`, and `high` reasoning tiers.
 - **Dual OpenCode Compatibility**: Natively supports both OpenCode v2 and OpenCode v1 (>= 1.18.29) out of the box.
 
 ## Installation
