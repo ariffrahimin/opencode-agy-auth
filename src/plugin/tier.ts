@@ -70,6 +70,15 @@ export const STATIC_MODELS_SIMPLE: Record<string, SimpleStaticModel> = {
     reasoning: true,
     attachment: true
   },
+  'gemini-4-hydrogen': {
+    name: 'Gemini 4 Hydrogen',
+    description: 'Gemini 4 Hydrogen base model. Select tier at runtime.',
+    maxTokens: 1048576,
+    maxOutputTokens: 65536,
+    toolCall: true,
+    reasoning: true,
+    attachment: true
+  },
   'claude-opus-5-5': {
     name: 'Claude Opus 5.5',
     description: 'Claude Opus 5.5 deep reasoning model. Select tier at runtime.',
@@ -128,6 +137,11 @@ export const TIER_MAPPING: Record<string, { low: string; high: string; medium?: 
     low: 'gemini-4-carbon-low',
     medium: 'gemini-4-carbon-medium',
     high: 'gemini-4-carbon-high'
+  },
+  'gemini-4-hydrogen': {
+    low: 'gemini-4-hydrogen-low',
+    medium: 'gemini-4-hydrogen-medium',
+    high: 'gemini-4-hydrogen-high'
   },
   'claude-opus-5-5': {
     low: 'claude-opus-5-5-low',

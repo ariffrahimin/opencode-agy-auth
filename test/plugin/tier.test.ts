@@ -15,6 +15,10 @@ describe('plugin/tier', () => {
     expect(TIER_MAPPING['gemini-4-carbon'].low).toBe('gemini-4-carbon-low');
     expect(TIER_MAPPING['gemini-4-carbon'].medium).toBe('gemini-4-carbon-medium');
     expect(TIER_MAPPING['gemini-4-carbon'].high).toBe('gemini-4-carbon-high');
+    expect(TIER_MAPPING['gemini-4-hydrogen']).toBeDefined();
+    expect(TIER_MAPPING['gemini-4-hydrogen'].low).toBe('gemini-4-hydrogen-low');
+    expect(TIER_MAPPING['gemini-4-hydrogen'].medium).toBe('gemini-4-hydrogen-medium');
+    expect(TIER_MAPPING['gemini-4-hydrogen'].high).toBe('gemini-4-hydrogen-high');
   });
 
   it('returns unmapped model unchanged', () => {
@@ -25,6 +29,7 @@ describe('plugin/tier', () => {
     expect(resolveModelTier('gemini-3.8-flash')).toBe('gemini-3.8-flash-medium');
     expect(resolveModelTier('gemini-4-argon')).toBe('gemini-4-argon-medium');
     expect(resolveModelTier('gemini-4-carbon')).toBe('gemini-4-carbon-medium');
+    expect(resolveModelTier('gemini-4-hydrogen')).toBe('gemini-4-hydrogen-medium');
   });
 
   it('resolves tier from model suffix (@low, @high)', () => {
