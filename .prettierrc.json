@@ -1,0 +1,24 @@
+{
+  "semi": true,
+  "tabWidth": 2,
+  "useTabs": false,
+  "singleQuote": true,
+  "trailingComma": "none",
+  "printWidth": 100,
+  "overrides": [
+    {
+      "files": [
+        "src/sdk/request/**/*.ts",
+        "src/sdk/request-helpers/**/*.ts",
+        "src/sdk/retry/**/*.ts",
+        "src/sdk/cache/**/*.ts",
+        "src/plugin/project/types.ts",
+        "src/plugin/project/utils.ts"
+      ],
+      "options": {
+        "singleQuote": false,
+        "trailingComma": "all"
+      }
+    }
+  ]
+}

@@ -124,6 +124,7 @@ export function prepareAgyRequest(
 export const LEGACY_MODEL_ENUM_FALLBACKS: Record<string, string> = {
   "gemini-3.1-pro-high": "MODEL_PLACEHOLDER_M16",
   "gemini-pro-agent": "MODEL_PLACEHOLDER_M16",
+  "gemini-4-hydrogen-xhigh": "MODEL_PLACEHOLDER_M464",
 };
 
 export function getModelEnum(modelName: string): string {

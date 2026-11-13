@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { getModelEnum, prepareAgyRequest, sanitizeClaudeThinkingParts } from "../../../src/sdk/request/prepare";
+import { resolveEnterpriseModelName } from "../../../src/plugin/project/types";
 import { cacheSignature } from "../../../src/plugin/cache";
 
 describe("prepareAgyRequest Claude model detection and label setting", () => {
@@ -457,6 +458,8 @@ describe("prepareAgyRequest Claude model detection and label setting", () => {
       expect(getModelEnum("gemini-4-hydrogen-low")).toBe("MODEL_PLACEHOLDER_M463");
       expect(getModelEnum("gemini-4-hydrogen-medium")).toBe("MODEL_PLACEHOLDER_M462");
       expect(getModelEnum("gemini-4-hydrogen-high")).toBe("MODEL_PLACEHOLDER_M461");
+      expect(getModelEnum("gemini-4-hydrogen-xhigh")).toBe("MODEL_PLACEHOLDER_M464");
+      expect(resolveEnterpriseModelName("gemini-4-hydrogen-xhigh")).toBe("gemini-4-hydrogen-xhigh");
     });
 
     it("sets model_enum to MODEL_PLACEHOLDER_M16 in prepareAgyRequest for gemini-3.1-pro-high", () => {

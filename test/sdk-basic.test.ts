@@ -136,6 +136,10 @@ describe("src/sdk/request-helpers/thinking", () => {
       includeThoughts: true,
     });
 
+    expect(normalizeThinkingConfig({ thinkingLevel: "XHIGH" })).toEqual({
+      thinkingBudget: 4096,
+      includeThoughts: true,
+    });
     expect(normalizeThinkingConfig({ thinkingLevel: "HIGH" })).toEqual({
       thinkingBudget: 2048,
       includeThoughts: true,
