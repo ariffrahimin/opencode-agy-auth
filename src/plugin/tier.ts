@@ -108,7 +108,7 @@ export const STATIC_MODELS_SIMPLE: Record<string, SimpleStaticModel> = {
   }
 };
 
-export const TIER_MAPPING: Record<string, { low: string; high: string; medium?: string; minimal?: string } & Record<string, string | undefined>> = {
+export const TIER_MAPPING: Record<string, { low: string; high: string; medium?: string; minimal?: string; xhigh?: string } & Record<string, string | undefined>> = {
   'gemini-3.8-flash': {
     low: 'gemini-3.8-flash-low',
     medium: 'gemini-3.8-flash-medium',
@@ -141,7 +141,8 @@ export const TIER_MAPPING: Record<string, { low: string; high: string; medium?: 
   'gemini-4-hydrogen': {
     low: 'gemini-4-hydrogen-low',
     medium: 'gemini-4-hydrogen-medium',
-    high: 'gemini-4-hydrogen-high'
+    high: 'gemini-4-hydrogen-high',
+    xhigh: 'gemini-4-hydrogen-xhigh'
   },
   'claude-opus-5-5': {
     low: 'claude-opus-5-5-low',

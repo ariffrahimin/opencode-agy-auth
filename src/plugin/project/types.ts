@@ -69,6 +69,7 @@ export function resolveEnterpriseModelName(
   const m = (modelName || "").replace(/^google-agy\//, "");
   if (!m) return "gemini-4-argon-high";
   if (
+    m.endsWith("-xhigh") ||
     m.endsWith("-high") ||
     m.endsWith("-medium") ||
     m.endsWith("-low") ||

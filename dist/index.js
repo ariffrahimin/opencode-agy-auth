@@ -1216,7 +1216,7 @@ async function checkOrGetEnterpriseLicense(accessToken, projectId, location = "g
 function resolveEnterpriseModelName(modelName, tierMapping) {
   const m = (modelName || "").replace(/^google-agy\//, "");
   if (!m) return "gemini-4-argon-high";
-  if (m.endsWith("-high") || m.endsWith("-medium") || m.endsWith("-low") || m.endsWith("-max")) {
+  if (m.endsWith("-xhigh") || m.endsWith("-high") || m.endsWith("-medium") || m.endsWith("-low") || m.endsWith("-max")) {
     return m;
   }
   if (tierMapping && tierMapping[m]) {
@@ -18376,7 +18376,9 @@ function normalizeThinkingConfig(config2) {
     return void 0;
   }
   if (thinkingLevel !== void 0 && thinkingBudget === void 0) {
-    if (thinkingLevel === "HIGH") {
+    if (thinkingLevel === "XHIGH") {
+      thinkingBudget = 4096;
+    } else if (thinkingLevel === "HIGH") {
       thinkingBudget = 2048;
     } else if (thinkingLevel === "MEDIUM") {
       thinkingBudget = 1024;
@@ -19058,7 +19060,8 @@ var TIER_MAPPING = {
   "gemini-4-hydrogen": {
     low: "gemini-4-hydrogen-low",
     medium: "gemini-4-hydrogen-medium",
-    high: "gemini-4-hydrogen-high"
+    high: "gemini-4-hydrogen-high",
+    xhigh: "gemini-4-hydrogen-xhigh"
   },
   "claude-opus-5-5": {
     low: "claude-opus-5-5-low",
@@ -19314,7 +19317,8 @@ function prepareAgyRequest(input, init, accessToken, projectId, thinkingConfigDe
 }
 var LEGACY_MODEL_ENUM_FALLBACKS = {
   "gemini-3.1-pro-high": "MODEL_PLACEHOLDER_M16",
-  "gemini-pro-agent": "MODEL_PLACEHOLDER_M16"
+  "gemini-pro-agent": "MODEL_PLACEHOLDER_M16",
+  "gemini-4-hydrogen-xhigh": "MODEL_PLACEHOLDER_M464"
 };
 function getModelEnum(modelName) {
   const deprecated = models_default.deprecatedModelIds;
@@ -20284,7 +20288,8 @@ var buildModelFromSimple = (modelId, simple) => {
       } : {},
       "low": { id: "low", name: "low", displayName: "low", title: "low", label: "low", options: { name: "low" }, headers: { "x-agy-tier": "low" } },
       ...TIER_MAPPING[modelId].medium !== void 0 ? { "medium": { id: "medium", name: "medium", displayName: "medium", title: "medium", label: "medium", options: { name: "medium" }, headers: { "x-agy-tier": "medium" } } } : {},
-      "high": { id: "high", name: "high", displayName: "high", title: "high", label: "high", options: { name: "high" }, headers: { "x-agy-tier": "high" } }
+      "high": { id: "high", name: "high", displayName: "high", title: "high", label: "high", options: { name: "high" }, headers: { "x-agy-tier": "high" } },
+      ...TIER_MAPPING[modelId].xhigh !== void 0 ? { "xhigh": { id: "xhigh", name: "xhigh", displayName: "xhigh", title: "xhigh", label: "xhigh", options: { name: "xhigh" }, headers: { "x-agy-tier": "xhigh" } } } : {}
     };
   }
   return {
@@ -21195,6 +21200,7 @@ async function setupOpenCodeV2(ctx) {
     if (mapping.low !== void 0) variants.push({ id: "low" });
     if (mapping.medium !== void 0) variants.push({ id: "medium" });
     if (mapping.high !== void 0) variants.push({ id: "high" });
+    if (mapping.xhigh !== void 0) variants.push({ id: "xhigh" });
     return variants.length > 0 ? variants : void 0;
   };
   const updateProviderRecord = (p) => {

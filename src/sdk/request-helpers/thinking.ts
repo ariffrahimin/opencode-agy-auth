@@ -24,7 +24,9 @@ export function normalizeThinkingConfig(config: unknown): ThinkingConfig | undef
 
   // Maps thinkingLevel to thinkingBudget and filters it to avoid upstream v1internal API incompatibilities.
   if (thinkingLevel !== undefined && thinkingBudget === undefined) {
-    if (thinkingLevel === "HIGH") {
+    if (thinkingLevel === "XHIGH") {
+      thinkingBudget = 4096;
+    } else if (thinkingLevel === "HIGH") {
       thinkingBudget = 2048;
     } else if (thinkingLevel === "MEDIUM") {
       thinkingBudget = 1024;

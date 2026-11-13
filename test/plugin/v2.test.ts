@@ -221,7 +221,8 @@ describe('OpenCode v2 Plugin Setup Adapter', () => {
     expect(catalog.providers[AGY_PROVIDER_ID].models['gemini-4-hydrogen'].variants).toEqual([
       { id: 'low' },
       { id: 'medium' },
-      { id: 'high' }
+      { id: 'high' },
+      { id: 'xhigh' }
     ]);
     expect(catalog.providers[AGY_PROVIDER_ID].models['claude-sonnet-5-5']).toBeDefined();
     expect(catalog.providers[AGY_PROVIDER_ID].models['claude-sonnet-5-5'].variants).toEqual([
