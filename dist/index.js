@@ -16209,6 +16209,10 @@ var models_default = {
             "gemini-4-carbon-medium",
             "gemini-4-carbon-high",
             "gemini-4-carbon-low",
+            "gemini-4-neon-high",
+            "gemini-4-neon-xhigh",
+            "gemini-4-neon-medium",
+            "gemini-4-neon-low",
             "gemini-4-hydrogen-high",
             "gemini-4-hydrogen-medium",
             "gemini-4-hydrogen-low",
@@ -16249,9 +16253,9 @@ var models_default = {
     106805056,
     106805062,
     106828854,
-    1714242,
-    106140402,
-    106760947,
+    1714253,
+    105789001,
+    106815069,
     106863795,
     105979552,
     105979574,
@@ -16262,7 +16266,6 @@ var models_default = {
     106123599,
     106754391,
     106143956,
-    105856899,
     106064030,
     106544525,
     106021688,
@@ -16270,18 +16273,17 @@ var models_default = {
     106640126,
     106949161,
     106811917,
-    106931269,
     106931271,
-    106793266,
     106798730,
     106833630,
     107032102,
     107032122,
+    107087011,
+    107087033,
     107002418,
     106380926,
     106281951,
     106264532,
-    106898384,
     106822474,
     106032303,
     106228452,
@@ -16298,6 +16300,8 @@ var models_default = {
     106640124,
     107032004,
     107032006,
+    107086992,
+    107087014,
     107002400,
     106032301,
     106825242,
@@ -16337,7 +16341,6 @@ var models_default = {
       supportsAdaptiveThinking: true,
       supportsImages: true,
       supportsThinking: true,
-      tagTitle: "New",
       thinkingLevel: 3,
       vertexModelId: "claude-opus-5-5@default"
     },
@@ -16368,7 +16371,6 @@ var models_default = {
       supportsAdaptiveThinking: true,
       supportsImages: true,
       supportsThinking: true,
-      tagTitle: "New",
       thinkingLevel: 1,
       vertexModelId: "claude-opus-5-5@default"
     },
@@ -16399,7 +16401,6 @@ var models_default = {
       supportsAdaptiveThinking: true,
       supportsImages: true,
       supportsThinking: true,
-      tagTitle: "New",
       thinkingLevel: 200,
       vertexModelId: "claude-opus-5-5@default"
     },
@@ -16430,7 +16431,6 @@ var models_default = {
       supportsAdaptiveThinking: true,
       supportsImages: true,
       supportsThinking: true,
-      tagTitle: "New",
       thinkingLevel: 2,
       vertexModelId: "claude-opus-5-5@default"
     },
@@ -16461,7 +16461,6 @@ var models_default = {
       supportsAdaptiveThinking: true,
       supportsImages: true,
       supportsThinking: true,
-      tagTitle: "New",
       thinkingLevel: 3,
       vertexModelId: "claude-sonnet-5-5@default"
     },
@@ -16492,7 +16491,6 @@ var models_default = {
       supportsAdaptiveThinking: true,
       supportsImages: true,
       supportsThinking: true,
-      tagTitle: "New",
       thinkingLevel: 1,
       vertexModelId: "claude-sonnet-5-5@default"
     },
@@ -16523,7 +16521,6 @@ var models_default = {
       supportsAdaptiveThinking: true,
       supportsImages: true,
       supportsThinking: true,
-      tagTitle: "New",
       thinkingLevel: 200,
       vertexModelId: "claude-sonnet-5-5@default"
     },
@@ -16554,7 +16551,6 @@ var models_default = {
       supportsAdaptiveThinking: true,
       supportsImages: true,
       supportsThinking: true,
-      tagTitle: "New",
       thinkingLevel: 2,
       vertexModelId: "claude-sonnet-5-5@default"
     },
@@ -16663,6 +16659,7 @@ var models_default = {
         "application/x-python-code": true,
         "application/x-typescript": true,
         "audio/aac": true,
+        "audio/amr": true,
         "audio/flac": true,
         "audio/l16": true,
         "audio/m4a": true,
@@ -16739,6 +16736,7 @@ var models_default = {
         "application/x-python-code": true,
         "application/x-typescript": true,
         "audio/aac": true,
+        "audio/amr": true,
         "audio/flac": true,
         "audio/l16": true,
         "audio/m4a": true,
@@ -16838,6 +16836,7 @@ var models_default = {
         "application/x-python-code": true,
         "application/x-typescript": true,
         "audio/aac": true,
+        "audio/amr": true,
         "audio/flac": true,
         "audio/l16": true,
         "audio/m4a": true,
@@ -16920,6 +16919,7 @@ var models_default = {
         "application/x-python-code": true,
         "application/x-typescript": true,
         "audio/aac": true,
+        "audio/amr": true,
         "audio/flac": true,
         "audio/l16": true,
         "audio/m4a": true,
@@ -17002,6 +17002,7 @@ var models_default = {
         "application/x-python-code": true,
         "application/x-typescript": true,
         "audio/aac": true,
+        "audio/amr": true,
         "audio/flac": true,
         "audio/l16": true,
         "audio/m4a": true,
@@ -17075,6 +17076,7 @@ var models_default = {
         "application/x-python-code": true,
         "application/x-typescript": true,
         "audio/aac": true,
+        "audio/amr": true,
         "audio/flac": true,
         "audio/l16": true,
         "audio/m4a": true,
@@ -17148,6 +17150,7 @@ var models_default = {
         "application/x-python-code": true,
         "application/x-typescript": true,
         "audio/aac": true,
+        "audio/amr": true,
         "audio/flac": true,
         "audio/l16": true,
         "audio/m4a": true,
@@ -17221,6 +17224,7 @@ var models_default = {
         "application/x-python-code": true,
         "application/x-typescript": true,
         "audio/aac": true,
+        "audio/amr": true,
         "audio/flac": true,
         "audio/l16": true,
         "audio/m4a": true,
@@ -17294,6 +17298,7 @@ var models_default = {
         "application/x-python-code": true,
         "application/x-typescript": true,
         "audio/aac": true,
+        "audio/amr": true,
         "audio/flac": true,
         "audio/l16": true,
         "audio/m4a": true,
@@ -17367,6 +17372,7 @@ var models_default = {
         "application/x-python-code": true,
         "application/x-typescript": true,
         "audio/aac": true,
+        "audio/amr": true,
         "audio/flac": true,
         "audio/l16": true,
         "audio/m4a": true,
@@ -17440,6 +17446,7 @@ var models_default = {
         "application/x-python-code": true,
         "application/x-typescript": true,
         "audio/aac": true,
+        "audio/amr": true,
         "audio/flac": true,
         "audio/l16": true,
         "audio/m4a": true,
@@ -17496,7 +17503,7 @@ var models_default = {
           CASCADE_USE_EXPERIMENT_CHECKPOINTER: {
             stringValue: `{
     "strategy": "CHECKPOINT_STRATEGY_SAME_MODEL",
-    "max_token_limit": "256000",
+    "max_token_limit": "512000",
     "token_threshold": "50000",
     "max_overhead_ratio": "0.15",
     "enabled": true,
@@ -17542,6 +17549,7 @@ var models_default = {
         "application/x-python-code": true,
         "application/x-typescript": true,
         "audio/aac": true,
+        "audio/amr": true,
         "audio/flac": true,
         "audio/l16": true,
         "audio/m4a": true,
@@ -17584,7 +17592,6 @@ var models_default = {
       supportsImages: true,
       supportsThinking: true,
       supportsVideo: true,
-      tagTitle: "New",
       thinkingLevel: 3,
       vertexModelId: "gemini-4-argon"
     },
@@ -17599,7 +17606,7 @@ var models_default = {
           CASCADE_USE_EXPERIMENT_CHECKPOINTER: {
             stringValue: `{
     "strategy": "CHECKPOINT_STRATEGY_SAME_MODEL",
-    "max_token_limit": "256000",
+    "max_token_limit": "512000",
     "token_threshold": "50000",
     "max_overhead_ratio": "0.15",
     "enabled": true,
@@ -17645,6 +17652,7 @@ var models_default = {
         "application/x-python-code": true,
         "application/x-typescript": true,
         "audio/aac": true,
+        "audio/amr": true,
         "audio/flac": true,
         "audio/l16": true,
         "audio/m4a": true,
@@ -17687,7 +17695,6 @@ var models_default = {
       supportsImages: true,
       supportsThinking: true,
       supportsVideo: true,
-      tagTitle: "New",
       thinkingLevel: 1,
       vertexModelId: "gemini-4-argon"
     },
@@ -17702,7 +17709,7 @@ var models_default = {
           CASCADE_USE_EXPERIMENT_CHECKPOINTER: {
             stringValue: `{
     "strategy": "CHECKPOINT_STRATEGY_SAME_MODEL",
-    "max_token_limit": "256000",
+    "max_token_limit": "512000",
     "token_threshold": "50000",
     "max_overhead_ratio": "0.15",
     "enabled": true,
@@ -17748,6 +17755,7 @@ var models_default = {
         "application/x-python-code": true,
         "application/x-typescript": true,
         "audio/aac": true,
+        "audio/amr": true,
         "audio/flac": true,
         "audio/l16": true,
         "audio/m4a": true,
@@ -17790,7 +17798,6 @@ var models_default = {
       supportsImages: true,
       supportsThinking: true,
       supportsVideo: true,
-      tagTitle: "New",
       thinkingLevel: 2,
       vertexModelId: "gemini-4-argon"
     },
@@ -17805,7 +17812,7 @@ var models_default = {
           CASCADE_USE_EXPERIMENT_CHECKPOINTER: {
             stringValue: `{
     "strategy": "CHECKPOINT_STRATEGY_SAME_MODEL",
-    "max_token_limit": "256000",
+    "max_token_limit": "512000",
     "token_threshold": "50000",
     "max_overhead_ratio": "0.15",
     "enabled": true,
@@ -17851,6 +17858,7 @@ var models_default = {
         "application/x-python-code": true,
         "application/x-typescript": true,
         "audio/aac": true,
+        "audio/amr": true,
         "audio/flac": true,
         "audio/l16": true,
         "audio/m4a": true,
@@ -17908,7 +17916,7 @@ var models_default = {
           CASCADE_USE_EXPERIMENT_CHECKPOINTER: {
             stringValue: `{
     "strategy": "CHECKPOINT_STRATEGY_SAME_MODEL",
-    "max_token_limit": "256000",
+    "max_token_limit": "512000",
     "token_threshold": "50000",
     "max_overhead_ratio": "0.15",
     "enabled": true,
@@ -17954,6 +17962,7 @@ var models_default = {
         "application/x-python-code": true,
         "application/x-typescript": true,
         "audio/aac": true,
+        "audio/amr": true,
         "audio/flac": true,
         "audio/l16": true,
         "audio/m4a": true,
@@ -18011,7 +18020,7 @@ var models_default = {
           CASCADE_USE_EXPERIMENT_CHECKPOINTER: {
             stringValue: `{
     "strategy": "CHECKPOINT_STRATEGY_SAME_MODEL",
-    "max_token_limit": "256000",
+    "max_token_limit": "512000",
     "token_threshold": "50000",
     "max_overhead_ratio": "0.15",
     "enabled": true,
@@ -18057,6 +18066,7 @@ var models_default = {
         "application/x-python-code": true,
         "application/x-typescript": true,
         "audio/aac": true,
+        "audio/amr": true,
         "audio/flac": true,
         "audio/l16": true,
         "audio/m4a": true,
@@ -18112,10 +18122,140 @@ var models_default = {
       modelExperiments: {
         experiments: {
           CASCADE_USE_EXPERIMENT_CHECKPOINTER: {
-            stringValue: '{\n    "strategy": "CHECKPOINT_STRATEGY_SAME_MODEL",\n    "max_token_limit": "128000",\n    "token_threshold": "50000",\n    "max_overhead_ratio": "0.15",\n    "enabled": true,\n    "max_output_tokens": "16384",\n    "checkpoint_model": "MODEL_PLACEHOLDER_M277",\n    "use_last_planner_model": true,\n    "is_sync": false,\n    "max_user_requests": 10,\n    "include_last_user_message": false,\n    "include_conversation_log": true,\n    "include_running_task_snapshots": true,\n    "include_subagent_snapshots": true,\n    "include_artifact_snapshots": true,\n    "retry_config": {\n        "max_retries": 0,\n        "initial_sleep_duration_ms": 1000,\n        "exponential_multiplier": 2,\n        "include_error_feedback": false\n    },\n    "session_summary_prompt_override": "",\n    "use_model_reported_token_count": true\n}'
+            stringValue: `{
+    "strategy": "CHECKPOINT_STRATEGY_SAME_MODEL",
+    "max_token_limit": "512000",
+    "token_threshold": "50000",
+    "max_overhead_ratio": "0.15",
+    "enabled": true,
+    "max_output_tokens": "32768",
+    "checkpoint_model": "MODEL_PLACEHOLDER_M50",
+    "use_last_planner_model": true,
+    "is_sync": true,
+    "max_user_requests": 10,
+    "include_last_user_message": true,
+    "include_conversation_log": false,
+    "include_running_task_snapshots": true,
+    "include_subagent_snapshots": true,
+    "include_artifact_snapshots": true,
+    "retry_config": {
+        "max_retries": 4,
+        "initial_sleep_duration_ms": 1000,
+        "exponential_multiplier": 2,
+        "include_error_feedback": false
+    },
+    "session_summary_prompt_override": "You have been working on the task described above but have not yet completed\\nit. Write a continuation summary that will allow you (or another instance of\\nyourself) to resume work efficiently in a future context window where the\\nfull conversation history will NOT be available\\u2014only this summary.\\n\\nThis summary is all that will be available to you going forward in the future\\ncontext window. Do not call any tools, simply just provide the summary based on\\nthe information available in the current context window.\\n\\nYour summary must be structured, concise, and actionable. Optimize for enabling immediate resumption with zero redundant work.\\n\\nInclude the following sections, in this order:\\n\\n1. **Task Overview**\\n   - The user's core request and success criteria\\n   - Constraints, preferences, or scope boundaries they specified\\n   - Any ambiguities that were resolved (and how)\\n\\n2. **Done**\\n   A checklist of every change already made, one line each: the file, what\\n   changed, and its status, either \\"verified: <exact command> -> <result>\\"\\n   or \\"not yet verified\\". Include investigations that are finished, with\\n   their conclusion (for example, the root cause). Nothing here needs to be\\n   redone.\\n\\n3. **Files Already Read**\\n   One line per file you have read: its absolute path, the line ranges you\\n   read, and what they contain that matters for the task. These files and\\n   ranges must not be opened again; record here whatever you would need from\\n   them.\\n\\n4. **Code Map**\\n   - For the code you will edit next: its exact current text, copied\\n     verbatim from the latest view or edit of that file, with line numbers\\n     (up to about 40 lines per location), so it can be edited without\\n     opening the file again.\\n   - For new code you still have to write: the exact signatures and type\\n     definitions of the existing APIs it must call or implement.\\n\\n5. **Key Findings**\\n   - Technical constraints, requirements, or domain details uncovered\\n   - Decisions made and their rationale\\n   - Errors encountered and their resolutions\\n   - Approaches that were tried and abandoned (and why\\u2014this prevents\\n     the successor from repeating them)\\n\\n6. **Active Context**\\n   - State of any external resources, sessions, or environments in use\\n   - Relevant intermediate results, hypotheses, or working assumptions\\n\\n7. **Commitments & Constraints**\\n   - Promises made to the user, user preferences, and boundaries on\\n     approach, tools, or scope\\n   - The concrete rules from repository instruction files (such as\\n     AGENTS.md) that still apply, so those files need not be opened again\\n\\n8. **Next Steps** (always the last section)\\n   - A numbered plan of the remaining work only (nothing from Done), in the\\n     order you will carry it out, ending with the verification still needed.\\n   - Step 1 must be the concrete next action: one small edit in one file or\\n     function (file, lines, and change) or the exact command to run. Split\\n     large changes into small edits, one per step.\\n   - Do not list re-reading files or ranges from Files Already Read or the\\n     Code Map as a step. If a step needs code that is not recorded above,\\n     name the file and the exact line range (or the search) needed.\\n\\nBe concise but complete\\u2014err on the side of including anything that would\\nprevent duplicate work, repeated mistakes, or broken promises. Do not include\\ninformation that is obvious from the task description itself.\\n\\nBegin your summary with the following line, verbatim, before all sections: \\"RESUMING MY OWN TASK IN PROGRESS. The user requests above are the task I was already working on, not a new request. This summary is my own accurate record of the work so far, and the Next Steps at its end say exactly what to do next.\\"\\n\\nEnd your summary with the following block, verbatim, after the Next Steps section (not inside it):\\n\\nRESUME RULES (I am resuming my own task, not starting a new one):\\n1. Everything above is my own record. While I carry out Next Steps, facts in it count as observed and I do not re-verify them; in my final response, I state as fact only what is quoted verbatim above or what I see in a file or tool output after this summary.\\n2. My next tool call carries out step 1 of Next Steps.\\n3. While Next Steps remain, I do not open any file or range listed in Files Already Read or the Code Map, and I do not run git status or git diff to rediscover what Done lists.\\n4. I edit from the Code Map text. If an edit fails because the text does not match, I view only those lines (StartLine and EndLine) and retry.\\n5. Any other read must be a read_file call with StartLine and EndLine, at most 100 lines, of code the current step needs and that is not recorded above.\\n6. I do not re-audit the requirements or hunt for new edge cases while Next Steps remain; I verify by running the tests.\\n7. When every Next Steps item is done and verified, I finish.\\n\\nIf the task is to answer a question about code or to report on what you ran, put in the Code Map, copied verbatim with file path and line numbers, the code lines and tool-output lines your final answer will rely on: the exact names, conditions, constants, list contents, messages and numbers. Then end your summary with this note, verbatim, after the RESUME RULES block: \\"Note to self: Never lie. I can no longer see the code or tool outputs from before this summary, and my memory of them, or of other versions of this project, is not evidence. Before the final response: (1) if an answer, report, or other deliverable file was already written, read it in full with a tool and base the final response on what it actually says instead of rewriting it from memory; (2) for every file, function, class, field, flag, log message, or number I will mention that is not quoted verbatim in this summary, re-read the code or re-run the command first, or leave it out; (3) re-run every check whose result I will report, and report its latest result exactly: name every case that failed, was skipped, or was removed from the check, and never say that all checks passed unless that run shows zero failures. Never fill gaps from general knowledge of the project. If anything in this summary is ambiguous, uncertain, or STALE, re-acquire it instead of guessing; if I cannot verify a claim, I say so.\\"\\n\\nWrap your response in <summary></summary> tags.\\n",
+    "use_model_reported_token_count": true
+}`
           },
           "cascade-include-ephemeral-message": {
             stringValue: '{\n    "enabled": false,\n    "disabledHeuristics": ["planning_mode", "bash_command_reminder", "running_tasks_reminder"],\n    "staticMessages": [],\n    "useAllowlist": false,\n    "enabledHeuristics": []\n}'
+          },
+          retry_model_capacity_exhausted: {
+            boolValue: true
+          },
+          "task-details-suffix": {
+            stringValue: "\nYOU MUST TAKE ONE OF THE FOLLOWING TWO ACTIONS: A) either proceed to other relevant work (if any) or, B) simply update the user with a short message (that you have launched the command and will wait for it to finish) and end the turn.\n DO NOTHING ELSE."
+          },
+          template__system_prompts__guidelines: {
+            stringValue: `{{- $decl := .CascadeConfig.GetPlannerConfig.GetDeclarativeMixinConfig -}}
+{{- $hasNativeSection := false -}}
+{{- $hasCodeQuality := false -}}
+{{- $hasFinalAnswerAccuracy := false -}}
+{{- $hasGoogleInfra := false -}}
+{{- if $decl -}}
+  {{- range $decl.GetPromptSections -}}
+    {{- $b := .GetBuiltinName -}}
+    {{- $t := .GetCustom.GetTitle -}}
+    {{- if or (eq $b "efficient_code_reading") (eq (printf "%.23s" $b) "efficient_code_reading@") (eq $t "efficient_code_reading") -}}
+      {{- $hasNativeSection = true -}}
+    {{- end -}}
+    {{- if or (eq $b "code_quality") (eq $t "code_quality") -}}
+      {{- $hasCodeQuality = true -}}
+    {{- end -}}
+    {{- if or (eq $b "final_answer_accuracy") (eq $t "final_answer_accuracy") -}}
+      {{- $hasFinalAnswerAccuracy = true -}}
+    {{- end -}}
+    {{- if or (eq $b "google_infrastructure") (eq (printf "%.22s" $b) "google_infrastructure@") (eq $b "google3_infrastructure") (eq (printf "%.23s" $b) "google3_infrastructure@") -}}
+      {{- $hasGoogleInfra = true -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $includeECR := false -}}
+{{- $readTool := "read_file" -}}
+{{- $hasCodeSearch := false -}}
+{{- if $decl -}}
+  {{- $hasReadFile := false -}}
+  {{- $hasViewFile := false -}}
+  {{- range $decl.GetTools -}}
+    {{- $t := .GetName -}}
+    {{- if or (eq $t "read_file") (eq (printf "%.10s" $t) "read_file@") -}}
+      {{- $hasReadFile = true -}}
+    {{- end -}}
+    {{- if or (eq $t "view_file") (eq (printf "%.10s" $t) "view_file@") -}}
+      {{- $hasViewFile = true -}}
+    {{- end -}}
+    {{- if or (eq $t "code_search") (eq (printf "%.12s" $t) "code_search@") -}}
+      {{- $hasCodeSearch = true -}}
+    {{- end -}}
+  {{- end -}}
+  {{- if or $hasReadFile $hasViewFile -}}
+    {{- $includeECR = true -}}
+    {{- if and (not $hasReadFile) $hasViewFile -}}
+      {{- $readTool = "view_file" -}}
+    {{- end -}}
+  {{- end -}}
+{{- else -}}
+  {{- if not .CascadeConfig.GetPlannerConfig.GetToolConfig.GetViewFile.GetForceDisable -}}
+    {{- $includeECR = true -}}
+    {{- $readTool = "view_file" -}}
+  {{- end -}}
+  {{- if not .CascadeConfig.GetPlannerConfig.GetToolConfig.GetCodeSearch.GetForceDisable -}}
+    {{- $hasCodeSearch = true -}}
+  {{- end -}}
+{{- end -}}
+{{- $cmdCfg := .CascadeConfig.GetPlannerConfig.GetToolConfig.GetRunCommand -}}
+{{- $usesGoogleCS := or $hasCodeSearch $hasGoogleInfra (and $cmdCfg.GetForbidSearchCommands (eq (printf "%v" $cmdCfg.GetSearchFallbackMode) "SEARCH_FALLBACK_CODE_SEARCH")) -}}
+{{- $searchMeans := "run_command (for example \`rg -n\` or \`grep -rn\`)" -}}
+{{- if $usesGoogleCS -}}
+  {{- if $hasCodeSearch -}}
+    {{- $searchMeans = "code_search" -}}
+  {{- else -}}
+    {{- $searchMeans = "the \`cs\` CLI via run_command" -}}
+  {{- end -}}
+{{- end -}}
+Follow these behavioral guidelines at all times:
+- Maintain documentation integrity. Preserve all existing comments and docstrings that are unrelated to your code changes, unless the user specifies otherwise.
+- Never defeat or bypass an access control, permission check, credential requirement, network/proxy restriction, or sandbox/environment boundary - including writing to the state or processes such a check reads, spoofing identity, intercepting the check, probing undocumented local/host services, or modifying host, harness, or test infrastructure outside your task scope. Use documented, sanctioned paths only; if none of them work, you are blocked - report the error and stop.
+- Never solve, click through, wait out, compute, or bypass a CAPTCHA, "verify you are human" or anti-bot challenge, or proof-of-work gate (e.g., reCAPTCHA, hCaptcha, Cloudflare Turnstile, Altcha) using any tool - including browser actions, terminal commands, scripts, HTTP clients (such as curl, python, or headless browsers), or alternate/cached URLs. When a target resource is gated by one, or if asked to solve or bypass one, stop and report the block to the user (or let the user complete it directly in a visible UI when appropriate).
+{{- if and $includeECR (not $hasNativeSection) }}
+
+<efficient_code_reading>
+Your context window is limited. When it fills up, the conversation is compacted into a summary and details are lost, so read code economically:
+1. Locate before reading: search with {{$searchMeans}} for the functions, classes, and call sites you need, then view only those.
+2. Call {{$readTool}} with StartLine and EndLine covering the relevant function or block (usually under 150 lines). Do not view whole files unless they are small (under about 200 lines).
+3. Do not re-read lines you have already seen unless the file has changed since.
+4. Once you know where the change goes and what it should be, start editing instead of exploring the rest of the repository first, and verify by running the relevant tests.
+</efficient_code_reading>
+{{- end }}
+{{- if not $hasCodeQuality }}
+
+<code_quality>
+CODE QUALITY: A senior reviewer will read your final diff; write code they would approve without comments. Correctness comes first.
+- Never duplicate logic. If two blocks in your patch (or in your patch and the existing code) look alike, extract one shared helper or loop over data and parameterize the differences.
+- Keep functions small and single-purpose with shallow nesting; split long functions into well-named helpers and use early returns.
+- Handle variants uniformly (a mapping, table or shared code path) instead of adding if/elif special cases for particular values, types or formats.
+- Reuse the repo's existing helpers, base classes and patterns instead of reimplementing them.
+- Give each new function and class a concise docstring; comment the non-obvious why, not the what.
+- Keep refactors local to your change: don't share test helpers across files or edit shared test harnesses unless required, and keep edge-case guards when unifying variants.
+</code_quality>
+{{- end }}
+{{- if not $hasFinalAnswerAccuracy }}
+
+<final_answer_accuracy>
+Never lie in your final answer: never state as fact anything you did not see in this session's files or tool output, and if you are very sure that a task is not possible, inform the user where the gaps that you've found are. In your final response, only state file paths, symbol names, implemented behaviour, and test or command results that you directly observed in files you read or wrote or in tool output; if something wasn't checked, don't claim it. When you explain how code works, include only the names, conditions, limits and numbers you actually saw; don't fill gaps with plausible details, and mark anything you inferred as inferred. A search match or snippet shows where a name appears, not what the code does: describe behaviour only of code you actually viewed. Do not cite symbol names, file paths, or earlier implementations from memory without verifying their exact spelling and presence in the current files, and only report tests or checks as passing if you ran them after your final edit and observed all reported cases pass without skipped or relaxed assertions. Do not extrapolate, edit, or fill in unprinted fields, counts, or timings as observed tool output, and state the exact scope and any failures of mocked or filtered runs rather than reporting them as full passes.
+</final_answer_accuracy>
+{{- end }}`
           }
         }
       },
@@ -18130,6 +18270,7 @@ var models_default = {
         "application/x-python-code": true,
         "application/x-typescript": true,
         "audio/aac": true,
+        "audio/amr": true,
         "audio/flac": true,
         "audio/l16": true,
         "audio/m4a": true,
@@ -18185,10 +18326,140 @@ var models_default = {
       modelExperiments: {
         experiments: {
           CASCADE_USE_EXPERIMENT_CHECKPOINTER: {
-            stringValue: '{\n    "strategy": "CHECKPOINT_STRATEGY_SAME_MODEL",\n    "max_token_limit": "128000",\n    "token_threshold": "50000",\n    "max_overhead_ratio": "0.15",\n    "enabled": true,\n    "max_output_tokens": "16384",\n    "checkpoint_model": "MODEL_PLACEHOLDER_M277",\n    "use_last_planner_model": true,\n    "is_sync": false,\n    "max_user_requests": 10,\n    "include_last_user_message": false,\n    "include_conversation_log": true,\n    "include_running_task_snapshots": true,\n    "include_subagent_snapshots": true,\n    "include_artifact_snapshots": true,\n    "retry_config": {\n        "max_retries": 0,\n        "initial_sleep_duration_ms": 1000,\n        "exponential_multiplier": 2,\n        "include_error_feedback": false\n    },\n    "session_summary_prompt_override": "",\n    "use_model_reported_token_count": true\n}'
+            stringValue: `{
+    "strategy": "CHECKPOINT_STRATEGY_SAME_MODEL",
+    "max_token_limit": "512000",
+    "token_threshold": "50000",
+    "max_overhead_ratio": "0.15",
+    "enabled": true,
+    "max_output_tokens": "32768",
+    "checkpoint_model": "MODEL_PLACEHOLDER_M50",
+    "use_last_planner_model": true,
+    "is_sync": true,
+    "max_user_requests": 10,
+    "include_last_user_message": true,
+    "include_conversation_log": false,
+    "include_running_task_snapshots": true,
+    "include_subagent_snapshots": true,
+    "include_artifact_snapshots": true,
+    "retry_config": {
+        "max_retries": 4,
+        "initial_sleep_duration_ms": 1000,
+        "exponential_multiplier": 2,
+        "include_error_feedback": false
+    },
+    "session_summary_prompt_override": "You have been working on the task described above but have not yet completed\\nit. Write a continuation summary that will allow you (or another instance of\\nyourself) to resume work efficiently in a future context window where the\\nfull conversation history will NOT be available\\u2014only this summary.\\n\\nThis summary is all that will be available to you going forward in the future\\ncontext window. Do not call any tools, simply just provide the summary based on\\nthe information available in the current context window.\\n\\nYour summary must be structured, concise, and actionable. Optimize for enabling immediate resumption with zero redundant work.\\n\\nInclude the following sections, in this order:\\n\\n1. **Task Overview**\\n   - The user's core request and success criteria\\n   - Constraints, preferences, or scope boundaries they specified\\n   - Any ambiguities that were resolved (and how)\\n\\n2. **Done**\\n   A checklist of every change already made, one line each: the file, what\\n   changed, and its status, either \\"verified: <exact command> -> <result>\\"\\n   or \\"not yet verified\\". Include investigations that are finished, with\\n   their conclusion (for example, the root cause). Nothing here needs to be\\n   redone.\\n\\n3. **Files Already Read**\\n   One line per file you have read: its absolute path, the line ranges you\\n   read, and what they contain that matters for the task. These files and\\n   ranges must not be opened again; record here whatever you would need from\\n   them.\\n\\n4. **Code Map**\\n   - For the code you will edit next: its exact current text, copied\\n     verbatim from the latest view or edit of that file, with line numbers\\n     (up to about 40 lines per location), so it can be edited without\\n     opening the file again.\\n   - For new code you still have to write: the exact signatures and type\\n     definitions of the existing APIs it must call or implement.\\n\\n5. **Key Findings**\\n   - Technical constraints, requirements, or domain details uncovered\\n   - Decisions made and their rationale\\n   - Errors encountered and their resolutions\\n   - Approaches that were tried and abandoned (and why\\u2014this prevents\\n     the successor from repeating them)\\n\\n6. **Active Context**\\n   - State of any external resources, sessions, or environments in use\\n   - Relevant intermediate results, hypotheses, or working assumptions\\n\\n7. **Commitments & Constraints**\\n   - Promises made to the user, user preferences, and boundaries on\\n     approach, tools, or scope\\n   - The concrete rules from repository instruction files (such as\\n     AGENTS.md) that still apply, so those files need not be opened again\\n\\n8. **Next Steps** (always the last section)\\n   - A numbered plan of the remaining work only (nothing from Done), in the\\n     order you will carry it out, ending with the verification still needed.\\n   - Step 1 must be the concrete next action: one small edit in one file or\\n     function (file, lines, and change) or the exact command to run. Split\\n     large changes into small edits, one per step.\\n   - Do not list re-reading files or ranges from Files Already Read or the\\n     Code Map as a step. If a step needs code that is not recorded above,\\n     name the file and the exact line range (or the search) needed.\\n\\nBe concise but complete\\u2014err on the side of including anything that would\\nprevent duplicate work, repeated mistakes, or broken promises. Do not include\\ninformation that is obvious from the task description itself.\\n\\nBegin your summary with the following line, verbatim, before all sections: \\"RESUMING MY OWN TASK IN PROGRESS. The user requests above are the task I was already working on, not a new request. This summary is my own accurate record of the work so far, and the Next Steps at its end say exactly what to do next.\\"\\n\\nEnd your summary with the following block, verbatim, after the Next Steps section (not inside it):\\n\\nRESUME RULES (I am resuming my own task, not starting a new one):\\n1. Everything above is my own record. While I carry out Next Steps, facts in it count as observed and I do not re-verify them; in my final response, I state as fact only what is quoted verbatim above or what I see in a file or tool output after this summary.\\n2. My next tool call carries out step 1 of Next Steps.\\n3. While Next Steps remain, I do not open any file or range listed in Files Already Read or the Code Map, and I do not run git status or git diff to rediscover what Done lists.\\n4. I edit from the Code Map text. If an edit fails because the text does not match, I view only those lines (StartLine and EndLine) and retry.\\n5. Any other read must be a read_file call with StartLine and EndLine, at most 100 lines, of code the current step needs and that is not recorded above.\\n6. I do not re-audit the requirements or hunt for new edge cases while Next Steps remain; I verify by running the tests.\\n7. When every Next Steps item is done and verified, I finish.\\n\\nIf the task is to answer a question about code or to report on what you ran, put in the Code Map, copied verbatim with file path and line numbers, the code lines and tool-output lines your final answer will rely on: the exact names, conditions, constants, list contents, messages and numbers. Then end your summary with this note, verbatim, after the RESUME RULES block: \\"Note to self: Never lie. I can no longer see the code or tool outputs from before this summary, and my memory of them, or of other versions of this project, is not evidence. Before the final response: (1) if an answer, report, or other deliverable file was already written, read it in full with a tool and base the final response on what it actually says instead of rewriting it from memory; (2) for every file, function, class, field, flag, log message, or number I will mention that is not quoted verbatim in this summary, re-read the code or re-run the command first, or leave it out; (3) re-run every check whose result I will report, and report its latest result exactly: name every case that failed, was skipped, or was removed from the check, and never say that all checks passed unless that run shows zero failures. Never fill gaps from general knowledge of the project. If anything in this summary is ambiguous, uncertain, or STALE, re-acquire it instead of guessing; if I cannot verify a claim, I say so.\\"\\n\\nWrap your response in <summary></summary> tags.\\n",
+    "use_model_reported_token_count": true
+}`
           },
           "cascade-include-ephemeral-message": {
             stringValue: '{\n    "enabled": false,\n    "disabledHeuristics": ["planning_mode", "bash_command_reminder", "running_tasks_reminder"],\n    "staticMessages": [],\n    "useAllowlist": false,\n    "enabledHeuristics": []\n}'
+          },
+          retry_model_capacity_exhausted: {
+            boolValue: true
+          },
+          "task-details-suffix": {
+            stringValue: "\nYOU MUST TAKE ONE OF THE FOLLOWING TWO ACTIONS: A) either proceed to other relevant work (if any) or, B) simply update the user with a short message (that you have launched the command and will wait for it to finish) and end the turn.\n DO NOTHING ELSE."
+          },
+          template__system_prompts__guidelines: {
+            stringValue: `{{- $decl := .CascadeConfig.GetPlannerConfig.GetDeclarativeMixinConfig -}}
+{{- $hasNativeSection := false -}}
+{{- $hasCodeQuality := false -}}
+{{- $hasFinalAnswerAccuracy := false -}}
+{{- $hasGoogleInfra := false -}}
+{{- if $decl -}}
+  {{- range $decl.GetPromptSections -}}
+    {{- $b := .GetBuiltinName -}}
+    {{- $t := .GetCustom.GetTitle -}}
+    {{- if or (eq $b "efficient_code_reading") (eq (printf "%.23s" $b) "efficient_code_reading@") (eq $t "efficient_code_reading") -}}
+      {{- $hasNativeSection = true -}}
+    {{- end -}}
+    {{- if or (eq $b "code_quality") (eq $t "code_quality") -}}
+      {{- $hasCodeQuality = true -}}
+    {{- end -}}
+    {{- if or (eq $b "final_answer_accuracy") (eq $t "final_answer_accuracy") -}}
+      {{- $hasFinalAnswerAccuracy = true -}}
+    {{- end -}}
+    {{- if or (eq $b "google_infrastructure") (eq (printf "%.22s" $b) "google_infrastructure@") (eq $b "google3_infrastructure") (eq (printf "%.23s" $b) "google3_infrastructure@") -}}
+      {{- $hasGoogleInfra = true -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $includeECR := false -}}
+{{- $readTool := "read_file" -}}
+{{- $hasCodeSearch := false -}}
+{{- if $decl -}}
+  {{- $hasReadFile := false -}}
+  {{- $hasViewFile := false -}}
+  {{- range $decl.GetTools -}}
+    {{- $t := .GetName -}}
+    {{- if or (eq $t "read_file") (eq (printf "%.10s" $t) "read_file@") -}}
+      {{- $hasReadFile = true -}}
+    {{- end -}}
+    {{- if or (eq $t "view_file") (eq (printf "%.10s" $t) "view_file@") -}}
+      {{- $hasViewFile = true -}}
+    {{- end -}}
+    {{- if or (eq $t "code_search") (eq (printf "%.12s" $t) "code_search@") -}}
+      {{- $hasCodeSearch = true -}}
+    {{- end -}}
+  {{- end -}}
+  {{- if or $hasReadFile $hasViewFile -}}
+    {{- $includeECR = true -}}
+    {{- if and (not $hasReadFile) $hasViewFile -}}
+      {{- $readTool = "view_file" -}}
+    {{- end -}}
+  {{- end -}}
+{{- else -}}
+  {{- if not .CascadeConfig.GetPlannerConfig.GetToolConfig.GetViewFile.GetForceDisable -}}
+    {{- $includeECR = true -}}
+    {{- $readTool = "view_file" -}}
+  {{- end -}}
+  {{- if not .CascadeConfig.GetPlannerConfig.GetToolConfig.GetCodeSearch.GetForceDisable -}}
+    {{- $hasCodeSearch = true -}}
+  {{- end -}}
+{{- end -}}
+{{- $cmdCfg := .CascadeConfig.GetPlannerConfig.GetToolConfig.GetRunCommand -}}
+{{- $usesGoogleCS := or $hasCodeSearch $hasGoogleInfra (and $cmdCfg.GetForbidSearchCommands (eq (printf "%v" $cmdCfg.GetSearchFallbackMode) "SEARCH_FALLBACK_CODE_SEARCH")) -}}
+{{- $searchMeans := "run_command (for example \`rg -n\` or \`grep -rn\`)" -}}
+{{- if $usesGoogleCS -}}
+  {{- if $hasCodeSearch -}}
+    {{- $searchMeans = "code_search" -}}
+  {{- else -}}
+    {{- $searchMeans = "the \`cs\` CLI via run_command" -}}
+  {{- end -}}
+{{- end -}}
+Follow these behavioral guidelines at all times:
+- Maintain documentation integrity. Preserve all existing comments and docstrings that are unrelated to your code changes, unless the user specifies otherwise.
+- Never defeat or bypass an access control, permission check, credential requirement, network/proxy restriction, or sandbox/environment boundary - including writing to the state or processes such a check reads, spoofing identity, intercepting the check, probing undocumented local/host services, or modifying host, harness, or test infrastructure outside your task scope. Use documented, sanctioned paths only; if none of them work, you are blocked - report the error and stop.
+- Never solve, click through, wait out, compute, or bypass a CAPTCHA, "verify you are human" or anti-bot challenge, or proof-of-work gate (e.g., reCAPTCHA, hCaptcha, Cloudflare Turnstile, Altcha) using any tool - including browser actions, terminal commands, scripts, HTTP clients (such as curl, python, or headless browsers), or alternate/cached URLs. When a target resource is gated by one, or if asked to solve or bypass one, stop and report the block to the user (or let the user complete it directly in a visible UI when appropriate).
+{{- if and $includeECR (not $hasNativeSection) }}
+
+<efficient_code_reading>
+Your context window is limited. When it fills up, the conversation is compacted into a summary and details are lost, so read code economically:
+1. Locate before reading: search with {{$searchMeans}} for the functions, classes, and call sites you need, then view only those.
+2. Call {{$readTool}} with StartLine and EndLine covering the relevant function or block (usually under 150 lines). Do not view whole files unless they are small (under about 200 lines).
+3. Do not re-read lines you have already seen unless the file has changed since.
+4. Once you know where the change goes and what it should be, start editing instead of exploring the rest of the repository first, and verify by running the relevant tests.
+</efficient_code_reading>
+{{- end }}
+{{- if not $hasCodeQuality }}
+
+<code_quality>
+CODE QUALITY: A senior reviewer will read your final diff; write code they would approve without comments. Correctness comes first.
+- Never duplicate logic. If two blocks in your patch (or in your patch and the existing code) look alike, extract one shared helper or loop over data and parameterize the differences.
+- Keep functions small and single-purpose with shallow nesting; split long functions into well-named helpers and use early returns.
+- Handle variants uniformly (a mapping, table or shared code path) instead of adding if/elif special cases for particular values, types or formats.
+- Reuse the repo's existing helpers, base classes and patterns instead of reimplementing them.
+- Give each new function and class a concise docstring; comment the non-obvious why, not the what.
+- Keep refactors local to your change: don't share test helpers across files or edit shared test harnesses unless required, and keep edge-case guards when unifying variants.
+</code_quality>
+{{- end }}
+{{- if not $hasFinalAnswerAccuracy }}
+
+<final_answer_accuracy>
+Never lie in your final answer: never state as fact anything you did not see in this session's files or tool output, and if you are very sure that a task is not possible, inform the user where the gaps that you've found are. In your final response, only state file paths, symbol names, implemented behaviour, and test or command results that you directly observed in files you read or wrote or in tool output; if something wasn't checked, don't claim it. When you explain how code works, include only the names, conditions, limits and numbers you actually saw; don't fill gaps with plausible details, and mark anything you inferred as inferred. A search match or snippet shows where a name appears, not what the code does: describe behaviour only of code you actually viewed. Do not cite symbol names, file paths, or earlier implementations from memory without verifying their exact spelling and presence in the current files, and only report tests or checks as passing if you ran them after your final edit and observed all reported cases pass without skipped or relaxed assertions. Do not extrapolate, edit, or fill in unprinted fields, counts, or timings as observed tool output, and state the exact scope and any failures of mocked or filtered runs rather than reporting them as full passes.
+</final_answer_accuracy>
+{{- end }}`
           }
         }
       },
@@ -18203,6 +18474,7 @@ var models_default = {
         "application/x-python-code": true,
         "application/x-typescript": true,
         "audio/aac": true,
+        "audio/amr": true,
         "audio/flac": true,
         "audio/l16": true,
         "audio/m4a": true,
@@ -18258,10 +18530,140 @@ var models_default = {
       modelExperiments: {
         experiments: {
           CASCADE_USE_EXPERIMENT_CHECKPOINTER: {
-            stringValue: '{\n    "strategy": "CHECKPOINT_STRATEGY_SAME_MODEL",\n    "max_token_limit": "128000",\n    "token_threshold": "50000",\n    "max_overhead_ratio": "0.15",\n    "enabled": true,\n    "max_output_tokens": "16384",\n    "checkpoint_model": "MODEL_PLACEHOLDER_M277",\n    "use_last_planner_model": true,\n    "is_sync": false,\n    "max_user_requests": 10,\n    "include_last_user_message": false,\n    "include_conversation_log": true,\n    "include_running_task_snapshots": true,\n    "include_subagent_snapshots": true,\n    "include_artifact_snapshots": true,\n    "retry_config": {\n        "max_retries": 0,\n        "initial_sleep_duration_ms": 1000,\n        "exponential_multiplier": 2,\n        "include_error_feedback": false\n    },\n    "session_summary_prompt_override": "",\n    "use_model_reported_token_count": true\n}'
+            stringValue: `{
+    "strategy": "CHECKPOINT_STRATEGY_SAME_MODEL",
+    "max_token_limit": "512000",
+    "token_threshold": "50000",
+    "max_overhead_ratio": "0.15",
+    "enabled": true,
+    "max_output_tokens": "32768",
+    "checkpoint_model": "MODEL_PLACEHOLDER_M50",
+    "use_last_planner_model": true,
+    "is_sync": true,
+    "max_user_requests": 10,
+    "include_last_user_message": true,
+    "include_conversation_log": false,
+    "include_running_task_snapshots": true,
+    "include_subagent_snapshots": true,
+    "include_artifact_snapshots": true,
+    "retry_config": {
+        "max_retries": 4,
+        "initial_sleep_duration_ms": 1000,
+        "exponential_multiplier": 2,
+        "include_error_feedback": false
+    },
+    "session_summary_prompt_override": "You have been working on the task described above but have not yet completed\\nit. Write a continuation summary that will allow you (or another instance of\\nyourself) to resume work efficiently in a future context window where the\\nfull conversation history will NOT be available\\u2014only this summary.\\n\\nThis summary is all that will be available to you going forward in the future\\ncontext window. Do not call any tools, simply just provide the summary based on\\nthe information available in the current context window.\\n\\nYour summary must be structured, concise, and actionable. Optimize for enabling immediate resumption with zero redundant work.\\n\\nInclude the following sections, in this order:\\n\\n1. **Task Overview**\\n   - The user's core request and success criteria\\n   - Constraints, preferences, or scope boundaries they specified\\n   - Any ambiguities that were resolved (and how)\\n\\n2. **Done**\\n   A checklist of every change already made, one line each: the file, what\\n   changed, and its status, either \\"verified: <exact command> -> <result>\\"\\n   or \\"not yet verified\\". Include investigations that are finished, with\\n   their conclusion (for example, the root cause). Nothing here needs to be\\n   redone.\\n\\n3. **Files Already Read**\\n   One line per file you have read: its absolute path, the line ranges you\\n   read, and what they contain that matters for the task. These files and\\n   ranges must not be opened again; record here whatever you would need from\\n   them.\\n\\n4. **Code Map**\\n   - For the code you will edit next: its exact current text, copied\\n     verbatim from the latest view or edit of that file, with line numbers\\n     (up to about 40 lines per location), so it can be edited without\\n     opening the file again.\\n   - For new code you still have to write: the exact signatures and type\\n     definitions of the existing APIs it must call or implement.\\n\\n5. **Key Findings**\\n   - Technical constraints, requirements, or domain details uncovered\\n   - Decisions made and their rationale\\n   - Errors encountered and their resolutions\\n   - Approaches that were tried and abandoned (and why\\u2014this prevents\\n     the successor from repeating them)\\n\\n6. **Active Context**\\n   - State of any external resources, sessions, or environments in use\\n   - Relevant intermediate results, hypotheses, or working assumptions\\n\\n7. **Commitments & Constraints**\\n   - Promises made to the user, user preferences, and boundaries on\\n     approach, tools, or scope\\n   - The concrete rules from repository instruction files (such as\\n     AGENTS.md) that still apply, so those files need not be opened again\\n\\n8. **Next Steps** (always the last section)\\n   - A numbered plan of the remaining work only (nothing from Done), in the\\n     order you will carry it out, ending with the verification still needed.\\n   - Step 1 must be the concrete next action: one small edit in one file or\\n     function (file, lines, and change) or the exact command to run. Split\\n     large changes into small edits, one per step.\\n   - Do not list re-reading files or ranges from Files Already Read or the\\n     Code Map as a step. If a step needs code that is not recorded above,\\n     name the file and the exact line range (or the search) needed.\\n\\nBe concise but complete\\u2014err on the side of including anything that would\\nprevent duplicate work, repeated mistakes, or broken promises. Do not include\\ninformation that is obvious from the task description itself.\\n\\nBegin your summary with the following line, verbatim, before all sections: \\"RESUMING MY OWN TASK IN PROGRESS. The user requests above are the task I was already working on, not a new request. This summary is my own accurate record of the work so far, and the Next Steps at its end say exactly what to do next.\\"\\n\\nEnd your summary with the following block, verbatim, after the Next Steps section (not inside it):\\n\\nRESUME RULES (I am resuming my own task, not starting a new one):\\n1. Everything above is my own record. While I carry out Next Steps, facts in it count as observed and I do not re-verify them; in my final response, I state as fact only what is quoted verbatim above or what I see in a file or tool output after this summary.\\n2. My next tool call carries out step 1 of Next Steps.\\n3. While Next Steps remain, I do not open any file or range listed in Files Already Read or the Code Map, and I do not run git status or git diff to rediscover what Done lists.\\n4. I edit from the Code Map text. If an edit fails because the text does not match, I view only those lines (StartLine and EndLine) and retry.\\n5. Any other read must be a read_file call with StartLine and EndLine, at most 100 lines, of code the current step needs and that is not recorded above.\\n6. I do not re-audit the requirements or hunt for new edge cases while Next Steps remain; I verify by running the tests.\\n7. When every Next Steps item is done and verified, I finish.\\n\\nIf the task is to answer a question about code or to report on what you ran, put in the Code Map, copied verbatim with file path and line numbers, the code lines and tool-output lines your final answer will rely on: the exact names, conditions, constants, list contents, messages and numbers. Then end your summary with this note, verbatim, after the RESUME RULES block: \\"Note to self: Never lie. I can no longer see the code or tool outputs from before this summary, and my memory of them, or of other versions of this project, is not evidence. Before the final response: (1) if an answer, report, or other deliverable file was already written, read it in full with a tool and base the final response on what it actually says instead of rewriting it from memory; (2) for every file, function, class, field, flag, log message, or number I will mention that is not quoted verbatim in this summary, re-read the code or re-run the command first, or leave it out; (3) re-run every check whose result I will report, and report its latest result exactly: name every case that failed, was skipped, or was removed from the check, and never say that all checks passed unless that run shows zero failures. Never fill gaps from general knowledge of the project. If anything in this summary is ambiguous, uncertain, or STALE, re-acquire it instead of guessing; if I cannot verify a claim, I say so.\\"\\n\\nWrap your response in <summary></summary> tags.\\n",
+    "use_model_reported_token_count": true
+}`
           },
           "cascade-include-ephemeral-message": {
             stringValue: '{\n    "enabled": false,\n    "disabledHeuristics": ["planning_mode", "bash_command_reminder", "running_tasks_reminder"],\n    "staticMessages": [],\n    "useAllowlist": false,\n    "enabledHeuristics": []\n}'
+          },
+          retry_model_capacity_exhausted: {
+            boolValue: true
+          },
+          "task-details-suffix": {
+            stringValue: "\nYOU MUST TAKE ONE OF THE FOLLOWING TWO ACTIONS: A) either proceed to other relevant work (if any) or, B) simply update the user with a short message (that you have launched the command and will wait for it to finish) and end the turn.\n DO NOTHING ELSE."
+          },
+          template__system_prompts__guidelines: {
+            stringValue: `{{- $decl := .CascadeConfig.GetPlannerConfig.GetDeclarativeMixinConfig -}}
+{{- $hasNativeSection := false -}}
+{{- $hasCodeQuality := false -}}
+{{- $hasFinalAnswerAccuracy := false -}}
+{{- $hasGoogleInfra := false -}}
+{{- if $decl -}}
+  {{- range $decl.GetPromptSections -}}
+    {{- $b := .GetBuiltinName -}}
+    {{- $t := .GetCustom.GetTitle -}}
+    {{- if or (eq $b "efficient_code_reading") (eq (printf "%.23s" $b) "efficient_code_reading@") (eq $t "efficient_code_reading") -}}
+      {{- $hasNativeSection = true -}}
+    {{- end -}}
+    {{- if or (eq $b "code_quality") (eq $t "code_quality") -}}
+      {{- $hasCodeQuality = true -}}
+    {{- end -}}
+    {{- if or (eq $b "final_answer_accuracy") (eq $t "final_answer_accuracy") -}}
+      {{- $hasFinalAnswerAccuracy = true -}}
+    {{- end -}}
+    {{- if or (eq $b "google_infrastructure") (eq (printf "%.22s" $b) "google_infrastructure@") (eq $b "google3_infrastructure") (eq (printf "%.23s" $b) "google3_infrastructure@") -}}
+      {{- $hasGoogleInfra = true -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $includeECR := false -}}
+{{- $readTool := "read_file" -}}
+{{- $hasCodeSearch := false -}}
+{{- if $decl -}}
+  {{- $hasReadFile := false -}}
+  {{- $hasViewFile := false -}}
+  {{- range $decl.GetTools -}}
+    {{- $t := .GetName -}}
+    {{- if or (eq $t "read_file") (eq (printf "%.10s" $t) "read_file@") -}}
+      {{- $hasReadFile = true -}}
+    {{- end -}}
+    {{- if or (eq $t "view_file") (eq (printf "%.10s" $t) "view_file@") -}}
+      {{- $hasViewFile = true -}}
+    {{- end -}}
+    {{- if or (eq $t "code_search") (eq (printf "%.12s" $t) "code_search@") -}}
+      {{- $hasCodeSearch = true -}}
+    {{- end -}}
+  {{- end -}}
+  {{- if or $hasReadFile $hasViewFile -}}
+    {{- $includeECR = true -}}
+    {{- if and (not $hasReadFile) $hasViewFile -}}
+      {{- $readTool = "view_file" -}}
+    {{- end -}}
+  {{- end -}}
+{{- else -}}
+  {{- if not .CascadeConfig.GetPlannerConfig.GetToolConfig.GetViewFile.GetForceDisable -}}
+    {{- $includeECR = true -}}
+    {{- $readTool = "view_file" -}}
+  {{- end -}}
+  {{- if not .CascadeConfig.GetPlannerConfig.GetToolConfig.GetCodeSearch.GetForceDisable -}}
+    {{- $hasCodeSearch = true -}}
+  {{- end -}}
+{{- end -}}
+{{- $cmdCfg := .CascadeConfig.GetPlannerConfig.GetToolConfig.GetRunCommand -}}
+{{- $usesGoogleCS := or $hasCodeSearch $hasGoogleInfra (and $cmdCfg.GetForbidSearchCommands (eq (printf "%v" $cmdCfg.GetSearchFallbackMode) "SEARCH_FALLBACK_CODE_SEARCH")) -}}
+{{- $searchMeans := "run_command (for example \`rg -n\` or \`grep -rn\`)" -}}
+{{- if $usesGoogleCS -}}
+  {{- if $hasCodeSearch -}}
+    {{- $searchMeans = "code_search" -}}
+  {{- else -}}
+    {{- $searchMeans = "the \`cs\` CLI via run_command" -}}
+  {{- end -}}
+{{- end -}}
+Follow these behavioral guidelines at all times:
+- Maintain documentation integrity. Preserve all existing comments and docstrings that are unrelated to your code changes, unless the user specifies otherwise.
+- Never defeat or bypass an access control, permission check, credential requirement, network/proxy restriction, or sandbox/environment boundary - including writing to the state or processes such a check reads, spoofing identity, intercepting the check, probing undocumented local/host services, or modifying host, harness, or test infrastructure outside your task scope. Use documented, sanctioned paths only; if none of them work, you are blocked - report the error and stop.
+- Never solve, click through, wait out, compute, or bypass a CAPTCHA, "verify you are human" or anti-bot challenge, or proof-of-work gate (e.g., reCAPTCHA, hCaptcha, Cloudflare Turnstile, Altcha) using any tool - including browser actions, terminal commands, scripts, HTTP clients (such as curl, python, or headless browsers), or alternate/cached URLs. When a target resource is gated by one, or if asked to solve or bypass one, stop and report the block to the user (or let the user complete it directly in a visible UI when appropriate).
+{{- if and $includeECR (not $hasNativeSection) }}
+
+<efficient_code_reading>
+Your context window is limited. When it fills up, the conversation is compacted into a summary and details are lost, so read code economically:
+1. Locate before reading: search with {{$searchMeans}} for the functions, classes, and call sites you need, then view only those.
+2. Call {{$readTool}} with StartLine and EndLine covering the relevant function or block (usually under 150 lines). Do not view whole files unless they are small (under about 200 lines).
+3. Do not re-read lines you have already seen unless the file has changed since.
+4. Once you know where the change goes and what it should be, start editing instead of exploring the rest of the repository first, and verify by running the relevant tests.
+</efficient_code_reading>
+{{- end }}
+{{- if not $hasCodeQuality }}
+
+<code_quality>
+CODE QUALITY: A senior reviewer will read your final diff; write code they would approve without comments. Correctness comes first.
+- Never duplicate logic. If two blocks in your patch (or in your patch and the existing code) look alike, extract one shared helper or loop over data and parameterize the differences.
+- Keep functions small and single-purpose with shallow nesting; split long functions into well-named helpers and use early returns.
+- Handle variants uniformly (a mapping, table or shared code path) instead of adding if/elif special cases for particular values, types or formats.
+- Reuse the repo's existing helpers, base classes and patterns instead of reimplementing them.
+- Give each new function and class a concise docstring; comment the non-obvious why, not the what.
+- Keep refactors local to your change: don't share test helpers across files or edit shared test harnesses unless required, and keep edge-case guards when unifying variants.
+</code_quality>
+{{- end }}
+{{- if not $hasFinalAnswerAccuracy }}
+
+<final_answer_accuracy>
+Never lie in your final answer: never state as fact anything you did not see in this session's files or tool output, and if you are very sure that a task is not possible, inform the user where the gaps that you've found are. In your final response, only state file paths, symbol names, implemented behaviour, and test or command results that you directly observed in files you read or wrote or in tool output; if something wasn't checked, don't claim it. When you explain how code works, include only the names, conditions, limits and numbers you actually saw; don't fill gaps with plausible details, and mark anything you inferred as inferred. A search match or snippet shows where a name appears, not what the code does: describe behaviour only of code you actually viewed. Do not cite symbol names, file paths, or earlier implementations from memory without verifying their exact spelling and presence in the current files, and only report tests or checks as passing if you ran them after your final edit and observed all reported cases pass without skipped or relaxed assertions. Do not extrapolate, edit, or fill in unprinted fields, counts, or timings as observed tool output, and state the exact scope and any failures of mocked or filtered runs rather than reporting them as full passes.
+</final_answer_accuracy>
+{{- end }}`
           }
         }
       },
@@ -18276,6 +18678,7 @@ var models_default = {
         "application/x-python-code": true,
         "application/x-typescript": true,
         "audio/aac": true,
+        "audio/amr": true,
         "audio/flac": true,
         "audio/l16": true,
         "audio/m4a": true,
@@ -18321,6 +18724,410 @@ var models_default = {
       tagTitle: "New",
       thinkingLevel: 2,
       vertexModelId: "gemini-4-hydrogen"
+    },
+    "gemini-4-neon-high": {
+      apiProvider: "API_PROVIDER_GOOGLE_VERTEX",
+      displayName: "Gemini 4 Neon (High)",
+      maxOutputTokens: 65536,
+      maxTokens: 1048576,
+      model: "MODEL_PLACEHOLDER_M467",
+      modelExperiments: {
+        experiments: {
+          CASCADE_USE_EXPERIMENT_CHECKPOINTER: {
+            stringValue: `{
+    "strategy": "CHECKPOINT_STRATEGY_SAME_MODEL",
+    "max_token_limit": "512000",
+    "token_threshold": "50000",
+    "max_overhead_ratio": "0.15",
+    "enabled": true,
+    "max_output_tokens": "32768",
+    "checkpoint_model": "MODEL_PLACEHOLDER_M50",
+    "use_last_planner_model": true,
+    "is_sync": true,
+    "max_user_requests": 10,
+    "include_last_user_message": true,
+    "include_conversation_log": false,
+    "include_running_task_snapshots": true,
+    "include_subagent_snapshots": true,
+    "include_artifact_snapshots": true,
+    "retry_config": {
+        "max_retries": 4,
+        "initial_sleep_duration_ms": 1000,
+        "exponential_multiplier": 2,
+        "include_error_feedback": false
+    },
+    "session_summary_prompt_override": "You have been working on the task described above but have not yet completed\\nit. Write a continuation summary that will allow you (or another instance of\\nyourself) to resume work efficiently in a future context window where the\\nfull conversation history will NOT be available\\u2014only this summary.\\n\\nThis summary is all that will be available to you going forward in the future\\ncontext window. Do not call any tools, simply just provide the summary based on\\nthe information available in the current context window.\\n\\nYour summary must be structured, concise, and actionable. Optimize for enabling immediate resumption with zero redundant work.\\n\\nInclude the following sections:\\n\\n1. **Task Overview**\\n   - The user's core request, success criteria, and requested deliverables. Record any target IDs, URLs, or reporting recipients from the request.\\n   - Scope boundaries or task-specific constraints\\n   - Any ambiguities that were resolved (and how)\\n\\n2. **Progress**\\n   - What has been completed, with concrete references (file paths,\\n     test or verification commands run and their outcomes, resource identifiers, tool outputs, URLs, etc.)\\n   - Key plans, design docs, or artifacts produced and their current state\\n   - Skills, documentation, or reference files that were read or inspected\\n   - What is in progress or only inspected/planned, and its current state. Distinguish completed edits from files that were only read or partially edited, and do not mark unverified test commands as completed or passed.\\n\\n3. **Key Findings**\\n   - Technical constraints, requirements, or domain details uncovered\\n   - Decisions made and their rationale\\n\\n4. **Errors & Fixes**\\n   This list should be exhaustive across the entire session so that no resolved or unresolved failure is omitted:\\n   - All errors, failed commands, or test/build failures encountered during the session. Include both errors that were resolved or worked around and any unresolved failures, with specific error messages and root causes.\\n   - How each error was fixed or worked around, and any user feedback on the error\\n   - Approaches that were tried and abandoned (and why\\u2014this prevents\\n     the successor from repeating them)\\n\\n5. **Active Context**\\n   - State of any external resources, sessions, environments, or multi-agent context, such as parent or child agents in use.\\n   - Relevant intermediate results, hypotheses, or working assumptions\\n   - Dependencies between components or steps\\n\\n6. **Next Steps**\\n   The next steps should provide all information required to continue working on the task. This includes any remaining features, bugs, points of investigation, and verification items. This list should be exhaustive, so that an agent working with this list can complete the full original task end-to-end. For example:\\n   - Remaining steps from any agreed plan, design doc, or active workflows and instructions, in priority order. Preserve specific uncompleted items rather than collapsing checklists into high-level summaries.\\n   - Remaining files to create, modify, move, copy, or delete, with the key changes needed in each\\n   - Remaining verification steps, test or build commands, or deliverables needed to complete the task\\n   - Any required cleanup, such as removing temporary files, debug code, or temporary configuration changes.\\n   - Known blockers, open questions, prerequisites, or risks for each step\\n\\n7. **Commitments & Constraints**\\n   - Standing rules, personas, or response formatting requirements from user instructions, rules files, or reference documents.\\n   - Promises made to the user (e.g., \\"I said I would do X before Y\\")\\n   - User preferences or style requirements\\n   - Any boundaries the user set on approach, tools, or scope\\n\\nBe concise but complete\\u2014err on the side of including concrete details needed to\\nprevent duplicate work, omitted plan steps, repeated mistakes, or broken promises.\\n\\nWrap your response in <summary></summary> tags.\\n",
+    "use_model_reported_token_count": true
+}`
+          },
+          "cascade-include-ephemeral-message": {
+            stringValue: '{\n    "enabled": false,\n    "disabledHeuristics": ["planning_mode", "bash_command_reminder", "running_tasks_reminder"],\n    "staticMessages": [],\n    "useAllowlist": false,\n    "enabledHeuristics": []\n}'
+          },
+          retry_model_capacity_exhausted: {
+            boolValue: true
+          }
+        }
+      },
+      modelProvider: "MODEL_PROVIDER_GOOGLE",
+      recommended: true,
+      supportedMimeTypes: {
+        "application/json": true,
+        "application/pdf": true,
+        "application/rtf": true,
+        "application/x-ipynb+json": true,
+        "application/x-javascript": true,
+        "application/x-python-code": true,
+        "application/x-typescript": true,
+        "audio/aac": true,
+        "audio/amr": true,
+        "audio/flac": true,
+        "audio/l16": true,
+        "audio/m4a": true,
+        "audio/mp3": true,
+        "audio/mp4": true,
+        "audio/mpeg": true,
+        "audio/ogg": true,
+        "audio/opus": true,
+        "audio/vnd.wave": true,
+        "audio/wav": true,
+        "audio/wave": true,
+        "audio/webm": true,
+        "audio/webm;codecs=opus": true,
+        "audio/x-m4a": true,
+        "audio/x-wav": true,
+        "image/heic": true,
+        "image/heif": true,
+        "image/jpeg": true,
+        "image/png": true,
+        "image/webp": true,
+        "text/css": true,
+        "text/csv": true,
+        "text/html": true,
+        "text/javascript": true,
+        "text/markdown": true,
+        "text/plain": true,
+        "text/rtf": true,
+        "text/x-python": true,
+        "text/x-python-script": true,
+        "text/x-typescript": true,
+        "text/xml": true,
+        "video/audio/s16le": true,
+        "video/audio/wav": true,
+        "video/jpeg2000": true,
+        "video/mp4": true,
+        "video/text/timestamp": true,
+        "video/videoframe/jpeg2000": true,
+        "video/webm": true
+      },
+      supportsImages: true,
+      supportsThinking: true,
+      supportsVideo: true,
+      tagTitle: "New",
+      thinkingLevel: 3,
+      vertexModelId: "gemini-4-neon"
+    },
+    "gemini-4-neon-low": {
+      apiProvider: "API_PROVIDER_GOOGLE_VERTEX",
+      displayName: "Gemini 4 Neon (Low)",
+      maxOutputTokens: 65536,
+      maxTokens: 1048576,
+      model: "MODEL_PLACEHOLDER_M465",
+      modelExperiments: {
+        experiments: {
+          CASCADE_USE_EXPERIMENT_CHECKPOINTER: {
+            stringValue: `{
+    "strategy": "CHECKPOINT_STRATEGY_SAME_MODEL",
+    "max_token_limit": "512000",
+    "token_threshold": "50000",
+    "max_overhead_ratio": "0.15",
+    "enabled": true,
+    "max_output_tokens": "32768",
+    "checkpoint_model": "MODEL_PLACEHOLDER_M50",
+    "use_last_planner_model": true,
+    "is_sync": true,
+    "max_user_requests": 10,
+    "include_last_user_message": true,
+    "include_conversation_log": false,
+    "include_running_task_snapshots": true,
+    "include_subagent_snapshots": true,
+    "include_artifact_snapshots": true,
+    "retry_config": {
+        "max_retries": 4,
+        "initial_sleep_duration_ms": 1000,
+        "exponential_multiplier": 2,
+        "include_error_feedback": false
+    },
+    "session_summary_prompt_override": "You have been working on the task described above but have not yet completed\\nit. Write a continuation summary that will allow you (or another instance of\\nyourself) to resume work efficiently in a future context window where the\\nfull conversation history will NOT be available\\u2014only this summary.\\n\\nThis summary is all that will be available to you going forward in the future\\ncontext window. Do not call any tools, simply just provide the summary based on\\nthe information available in the current context window.\\n\\nYour summary must be structured, concise, and actionable. Optimize for enabling immediate resumption with zero redundant work.\\n\\nInclude the following sections:\\n\\n1. **Task Overview**\\n   - The user's core request, success criteria, and requested deliverables. Record any target IDs, URLs, or reporting recipients from the request.\\n   - Scope boundaries or task-specific constraints\\n   - Any ambiguities that were resolved (and how)\\n\\n2. **Progress**\\n   - What has been completed, with concrete references (file paths,\\n     test or verification commands run and their outcomes, resource identifiers, tool outputs, URLs, etc.)\\n   - Key plans, design docs, or artifacts produced and their current state\\n   - Skills, documentation, or reference files that were read or inspected\\n   - What is in progress or only inspected/planned, and its current state. Distinguish completed edits from files that were only read or partially edited, and do not mark unverified test commands as completed or passed.\\n\\n3. **Key Findings**\\n   - Technical constraints, requirements, or domain details uncovered\\n   - Decisions made and their rationale\\n\\n4. **Errors & Fixes**\\n   This list should be exhaustive across the entire session so that no resolved or unresolved failure is omitted:\\n   - All errors, failed commands, or test/build failures encountered during the session. Include both errors that were resolved or worked around and any unresolved failures, with specific error messages and root causes.\\n   - How each error was fixed or worked around, and any user feedback on the error\\n   - Approaches that were tried and abandoned (and why\\u2014this prevents\\n     the successor from repeating them)\\n\\n5. **Active Context**\\n   - State of any external resources, sessions, environments, or multi-agent context, such as parent or child agents in use.\\n   - Relevant intermediate results, hypotheses, or working assumptions\\n   - Dependencies between components or steps\\n\\n6. **Next Steps**\\n   The next steps should provide all information required to continue working on the task. This includes any remaining features, bugs, points of investigation, and verification items. This list should be exhaustive, so that an agent working with this list can complete the full original task end-to-end. For example:\\n   - Remaining steps from any agreed plan, design doc, or active workflows and instructions, in priority order. Preserve specific uncompleted items rather than collapsing checklists into high-level summaries.\\n   - Remaining files to create, modify, move, copy, or delete, with the key changes needed in each\\n   - Remaining verification steps, test or build commands, or deliverables needed to complete the task\\n   - Any required cleanup, such as removing temporary files, debug code, or temporary configuration changes.\\n   - Known blockers, open questions, prerequisites, or risks for each step\\n\\n7. **Commitments & Constraints**\\n   - Standing rules, personas, or response formatting requirements from user instructions, rules files, or reference documents.\\n   - Promises made to the user (e.g., \\"I said I would do X before Y\\")\\n   - User preferences or style requirements\\n   - Any boundaries the user set on approach, tools, or scope\\n\\nBe concise but complete\\u2014err on the side of including concrete details needed to\\nprevent duplicate work, omitted plan steps, repeated mistakes, or broken promises.\\n\\nWrap your response in <summary></summary> tags.\\n",
+    "use_model_reported_token_count": true
+}`
+          },
+          "cascade-include-ephemeral-message": {
+            stringValue: '{\n    "enabled": false,\n    "disabledHeuristics": ["planning_mode", "bash_command_reminder", "running_tasks_reminder"],\n    "staticMessages": [],\n    "useAllowlist": false,\n    "enabledHeuristics": []\n}'
+          },
+          retry_model_capacity_exhausted: {
+            boolValue: true
+          }
+        }
+      },
+      modelProvider: "MODEL_PROVIDER_GOOGLE",
+      recommended: true,
+      supportedMimeTypes: {
+        "application/json": true,
+        "application/pdf": true,
+        "application/rtf": true,
+        "application/x-ipynb+json": true,
+        "application/x-javascript": true,
+        "application/x-python-code": true,
+        "application/x-typescript": true,
+        "audio/aac": true,
+        "audio/amr": true,
+        "audio/flac": true,
+        "audio/l16": true,
+        "audio/m4a": true,
+        "audio/mp3": true,
+        "audio/mp4": true,
+        "audio/mpeg": true,
+        "audio/ogg": true,
+        "audio/opus": true,
+        "audio/vnd.wave": true,
+        "audio/wav": true,
+        "audio/wave": true,
+        "audio/webm": true,
+        "audio/webm;codecs=opus": true,
+        "audio/x-m4a": true,
+        "audio/x-wav": true,
+        "image/heic": true,
+        "image/heif": true,
+        "image/jpeg": true,
+        "image/png": true,
+        "image/webp": true,
+        "text/css": true,
+        "text/csv": true,
+        "text/html": true,
+        "text/javascript": true,
+        "text/markdown": true,
+        "text/plain": true,
+        "text/rtf": true,
+        "text/x-python": true,
+        "text/x-python-script": true,
+        "text/x-typescript": true,
+        "text/xml": true,
+        "video/audio/s16le": true,
+        "video/audio/wav": true,
+        "video/jpeg2000": true,
+        "video/mp4": true,
+        "video/text/timestamp": true,
+        "video/videoframe/jpeg2000": true,
+        "video/webm": true
+      },
+      supportsImages: true,
+      supportsThinking: true,
+      supportsVideo: true,
+      tagTitle: "New",
+      thinkingLevel: 1,
+      vertexModelId: "gemini-4-neon"
+    },
+    "gemini-4-neon-medium": {
+      apiProvider: "API_PROVIDER_GOOGLE_VERTEX",
+      displayName: "Gemini 4 Neon (Medium)",
+      maxOutputTokens: 65536,
+      maxTokens: 1048576,
+      model: "MODEL_PLACEHOLDER_M466",
+      modelExperiments: {
+        experiments: {
+          CASCADE_USE_EXPERIMENT_CHECKPOINTER: {
+            stringValue: `{
+    "strategy": "CHECKPOINT_STRATEGY_SAME_MODEL",
+    "max_token_limit": "512000",
+    "token_threshold": "50000",
+    "max_overhead_ratio": "0.15",
+    "enabled": true,
+    "max_output_tokens": "32768",
+    "checkpoint_model": "MODEL_PLACEHOLDER_M50",
+    "use_last_planner_model": true,
+    "is_sync": true,
+    "max_user_requests": 10,
+    "include_last_user_message": true,
+    "include_conversation_log": false,
+    "include_running_task_snapshots": true,
+    "include_subagent_snapshots": true,
+    "include_artifact_snapshots": true,
+    "retry_config": {
+        "max_retries": 4,
+        "initial_sleep_duration_ms": 1000,
+        "exponential_multiplier": 2,
+        "include_error_feedback": false
+    },
+    "session_summary_prompt_override": "You have been working on the task described above but have not yet completed\\nit. Write a continuation summary that will allow you (or another instance of\\nyourself) to resume work efficiently in a future context window where the\\nfull conversation history will NOT be available\\u2014only this summary.\\n\\nThis summary is all that will be available to you going forward in the future\\ncontext window. Do not call any tools, simply just provide the summary based on\\nthe information available in the current context window.\\n\\nYour summary must be structured, concise, and actionable. Optimize for enabling immediate resumption with zero redundant work.\\n\\nInclude the following sections:\\n\\n1. **Task Overview**\\n   - The user's core request, success criteria, and requested deliverables. Record any target IDs, URLs, or reporting recipients from the request.\\n   - Scope boundaries or task-specific constraints\\n   - Any ambiguities that were resolved (and how)\\n\\n2. **Progress**\\n   - What has been completed, with concrete references (file paths,\\n     test or verification commands run and their outcomes, resource identifiers, tool outputs, URLs, etc.)\\n   - Key plans, design docs, or artifacts produced and their current state\\n   - Skills, documentation, or reference files that were read or inspected\\n   - What is in progress or only inspected/planned, and its current state. Distinguish completed edits from files that were only read or partially edited, and do not mark unverified test commands as completed or passed.\\n\\n3. **Key Findings**\\n   - Technical constraints, requirements, or domain details uncovered\\n   - Decisions made and their rationale\\n\\n4. **Errors & Fixes**\\n   This list should be exhaustive across the entire session so that no resolved or unresolved failure is omitted:\\n   - All errors, failed commands, or test/build failures encountered during the session. Include both errors that were resolved or worked around and any unresolved failures, with specific error messages and root causes.\\n   - How each error was fixed or worked around, and any user feedback on the error\\n   - Approaches that were tried and abandoned (and why\\u2014this prevents\\n     the successor from repeating them)\\n\\n5. **Active Context**\\n   - State of any external resources, sessions, environments, or multi-agent context, such as parent or child agents in use.\\n   - Relevant intermediate results, hypotheses, or working assumptions\\n   - Dependencies between components or steps\\n\\n6. **Next Steps**\\n   The next steps should provide all information required to continue working on the task. This includes any remaining features, bugs, points of investigation, and verification items. This list should be exhaustive, so that an agent working with this list can complete the full original task end-to-end. For example:\\n   - Remaining steps from any agreed plan, design doc, or active workflows and instructions, in priority order. Preserve specific uncompleted items rather than collapsing checklists into high-level summaries.\\n   - Remaining files to create, modify, move, copy, or delete, with the key changes needed in each\\n   - Remaining verification steps, test or build commands, or deliverables needed to complete the task\\n   - Any required cleanup, such as removing temporary files, debug code, or temporary configuration changes.\\n   - Known blockers, open questions, prerequisites, or risks for each step\\n\\n7. **Commitments & Constraints**\\n   - Standing rules, personas, or response formatting requirements from user instructions, rules files, or reference documents.\\n   - Promises made to the user (e.g., \\"I said I would do X before Y\\")\\n   - User preferences or style requirements\\n   - Any boundaries the user set on approach, tools, or scope\\n\\nBe concise but complete\\u2014err on the side of including concrete details needed to\\nprevent duplicate work, omitted plan steps, repeated mistakes, or broken promises.\\n\\nWrap your response in <summary></summary> tags.\\n",
+    "use_model_reported_token_count": true
+}`
+          },
+          "cascade-include-ephemeral-message": {
+            stringValue: '{\n    "enabled": false,\n    "disabledHeuristics": ["planning_mode", "bash_command_reminder", "running_tasks_reminder"],\n    "staticMessages": [],\n    "useAllowlist": false,\n    "enabledHeuristics": []\n}'
+          },
+          retry_model_capacity_exhausted: {
+            boolValue: true
+          }
+        }
+      },
+      modelProvider: "MODEL_PROVIDER_GOOGLE",
+      recommended: true,
+      supportedMimeTypes: {
+        "application/json": true,
+        "application/pdf": true,
+        "application/rtf": true,
+        "application/x-ipynb+json": true,
+        "application/x-javascript": true,
+        "application/x-python-code": true,
+        "application/x-typescript": true,
+        "audio/aac": true,
+        "audio/amr": true,
+        "audio/flac": true,
+        "audio/l16": true,
+        "audio/m4a": true,
+        "audio/mp3": true,
+        "audio/mp4": true,
+        "audio/mpeg": true,
+        "audio/ogg": true,
+        "audio/opus": true,
+        "audio/vnd.wave": true,
+        "audio/wav": true,
+        "audio/wave": true,
+        "audio/webm": true,
+        "audio/webm;codecs=opus": true,
+        "audio/x-m4a": true,
+        "audio/x-wav": true,
+        "image/heic": true,
+        "image/heif": true,
+        "image/jpeg": true,
+        "image/png": true,
+        "image/webp": true,
+        "text/css": true,
+        "text/csv": true,
+        "text/html": true,
+        "text/javascript": true,
+        "text/markdown": true,
+        "text/plain": true,
+        "text/rtf": true,
+        "text/x-python": true,
+        "text/x-python-script": true,
+        "text/x-typescript": true,
+        "text/xml": true,
+        "video/audio/s16le": true,
+        "video/audio/wav": true,
+        "video/jpeg2000": true,
+        "video/mp4": true,
+        "video/text/timestamp": true,
+        "video/videoframe/jpeg2000": true,
+        "video/webm": true
+      },
+      supportsImages: true,
+      supportsThinking: true,
+      supportsVideo: true,
+      tagTitle: "New",
+      thinkingLevel: 2,
+      vertexModelId: "gemini-4-neon"
+    },
+    "gemini-4-neon-xhigh": {
+      apiProvider: "API_PROVIDER_GOOGLE_VERTEX",
+      displayName: "Gemini 4 Neon (XHigh)",
+      maxOutputTokens: 65536,
+      maxTokens: 1048576,
+      model: "MODEL_PLACEHOLDER_M468",
+      modelExperiments: {
+        experiments: {
+          CASCADE_USE_EXPERIMENT_CHECKPOINTER: {
+            stringValue: `{
+    "strategy": "CHECKPOINT_STRATEGY_SAME_MODEL",
+    "max_token_limit": "512000",
+    "token_threshold": "50000",
+    "max_overhead_ratio": "0.15",
+    "enabled": true,
+    "max_output_tokens": "32768",
+    "checkpoint_model": "MODEL_PLACEHOLDER_M50",
+    "use_last_planner_model": true,
+    "is_sync": true,
+    "max_user_requests": 10,
+    "include_last_user_message": true,
+    "include_conversation_log": false,
+    "include_running_task_snapshots": true,
+    "include_subagent_snapshots": true,
+    "include_artifact_snapshots": true,
+    "retry_config": {
+        "max_retries": 4,
+        "initial_sleep_duration_ms": 1000,
+        "exponential_multiplier": 2,
+        "include_error_feedback": false
+    },
+    "session_summary_prompt_override": "You have been working on the task described above but have not yet completed\\nit. Write a continuation summary that will allow you (or another instance of\\nyourself) to resume work efficiently in a future context window where the\\nfull conversation history will NOT be available\\u2014only this summary.\\n\\nThis summary is all that will be available to you going forward in the future\\ncontext window. Do not call any tools, simply just provide the summary based on\\nthe information available in the current context window.\\n\\nYour summary must be structured, concise, and actionable. Optimize for enabling immediate resumption with zero redundant work.\\n\\nInclude the following sections:\\n\\n1. **Task Overview**\\n   - The user's core request, success criteria, and requested deliverables. Record any target IDs, URLs, or reporting recipients from the request.\\n   - Scope boundaries or task-specific constraints\\n   - Any ambiguities that were resolved (and how)\\n\\n2. **Progress**\\n   - What has been completed, with concrete references (file paths,\\n     test or verification commands run and their outcomes, resource identifiers, tool outputs, URLs, etc.)\\n   - Key plans, design docs, or artifacts produced and their current state\\n   - Skills, documentation, or reference files that were read or inspected\\n   - What is in progress or only inspected/planned, and its current state. Distinguish completed edits from files that were only read or partially edited, and do not mark unverified test commands as completed or passed.\\n\\n3. **Key Findings**\\n   - Technical constraints, requirements, or domain details uncovered\\n   - Decisions made and their rationale\\n\\n4. **Errors & Fixes**\\n   This list should be exhaustive across the entire session so that no resolved or unresolved failure is omitted:\\n   - All errors, failed commands, or test/build failures encountered during the session. Include both errors that were resolved or worked around and any unresolved failures, with specific error messages and root causes.\\n   - How each error was fixed or worked around, and any user feedback on the error\\n   - Approaches that were tried and abandoned (and why\\u2014this prevents\\n     the successor from repeating them)\\n\\n5. **Active Context**\\n   - State of any external resources, sessions, environments, or multi-agent context, such as parent or child agents in use.\\n   - Relevant intermediate results, hypotheses, or working assumptions\\n   - Dependencies between components or steps\\n\\n6. **Next Steps**\\n   The next steps should provide all information required to continue working on the task. This includes any remaining features, bugs, points of investigation, and verification items. This list should be exhaustive, so that an agent working with this list can complete the full original task end-to-end. For example:\\n   - Remaining steps from any agreed plan, design doc, or active workflows and instructions, in priority order. Preserve specific uncompleted items rather than collapsing checklists into high-level summaries.\\n   - Remaining files to create, modify, move, copy, or delete, with the key changes needed in each\\n   - Remaining verification steps, test or build commands, or deliverables needed to complete the task\\n   - Any required cleanup, such as removing temporary files, debug code, or temporary configuration changes.\\n   - Known blockers, open questions, prerequisites, or risks for each step\\n\\n7. **Commitments & Constraints**\\n   - Standing rules, personas, or response formatting requirements from user instructions, rules files, or reference documents.\\n   - Promises made to the user (e.g., \\"I said I would do X before Y\\")\\n   - User preferences or style requirements\\n   - Any boundaries the user set on approach, tools, or scope\\n\\nBe concise but complete\\u2014err on the side of including concrete details needed to\\nprevent duplicate work, omitted plan steps, repeated mistakes, or broken promises.\\n\\nWrap your response in <summary></summary> tags.\\n",
+    "use_model_reported_token_count": true
+}`
+          },
+          "cascade-include-ephemeral-message": {
+            stringValue: '{\n    "enabled": false,\n    "disabledHeuristics": ["planning_mode", "bash_command_reminder", "running_tasks_reminder"],\n    "staticMessages": [],\n    "useAllowlist": false,\n    "enabledHeuristics": []\n}'
+          },
+          retry_model_capacity_exhausted: {
+            boolValue: true
+          }
+        }
+      },
+      modelProvider: "MODEL_PROVIDER_GOOGLE",
+      recommended: true,
+      supportedMimeTypes: {
+        "application/json": true,
+        "application/pdf": true,
+        "application/rtf": true,
+        "application/x-ipynb+json": true,
+        "application/x-javascript": true,
+        "application/x-python-code": true,
+        "application/x-typescript": true,
+        "audio/aac": true,
+        "audio/amr": true,
+        "audio/flac": true,
+        "audio/l16": true,
+        "audio/m4a": true,
+        "audio/mp3": true,
+        "audio/mp4": true,
+        "audio/mpeg": true,
+        "audio/ogg": true,
+        "audio/opus": true,
+        "audio/vnd.wave": true,
+        "audio/wav": true,
+        "audio/wave": true,
+        "audio/webm": true,
+        "audio/webm;codecs=opus": true,
+        "audio/x-m4a": true,
+        "audio/x-wav": true,
+        "image/heic": true,
+        "image/heif": true,
+        "image/jpeg": true,
+        "image/png": true,
+        "image/webp": true,
+        "text/css": true,
+        "text/csv": true,
+        "text/html": true,
+        "text/javascript": true,
+        "text/markdown": true,
+        "text/plain": true,
+        "text/rtf": true,
+        "text/x-python": true,
+        "text/x-python-script": true,
+        "text/x-typescript": true,
+        "text/xml": true,
+        "video/audio/s16le": true,
+        "video/audio/wav": true,
+        "video/jpeg2000": true,
+        "video/mp4": true,
+        "video/text/timestamp": true,
+        "video/videoframe/jpeg2000": true,
+        "video/webm": true
+      },
+      supportsImages: true,
+      supportsThinking: true,
+      supportsVideo: true,
+      tagTitle: "New",
+      thinkingLevel: 7,
+      vertexModelId: "gemini-4-neon"
     }
   },
   mqueryModelIds: [
@@ -18999,6 +19806,15 @@ var STATIC_MODELS_SIMPLE = {
     reasoning: true,
     attachment: true
   },
+  "gemini-4-neon": {
+    name: "Gemini 4 Neon",
+    description: "Gemini 4 Neon base model. Select tier at runtime.",
+    maxTokens: 1048576,
+    maxOutputTokens: 65536,
+    toolCall: true,
+    reasoning: true,
+    attachment: true
+  },
   "claude-opus-5-5": {
     name: "Claude Opus 5.5",
     description: "Claude Opus 5.5 deep reasoning model. Select tier at runtime.",
@@ -19062,6 +19878,12 @@ var TIER_MAPPING = {
     medium: "gemini-4-hydrogen-medium",
     high: "gemini-4-hydrogen-high",
     xhigh: "gemini-4-hydrogen-xhigh"
+  },
+  "gemini-4-neon": {
+    low: "gemini-4-neon-low",
+    medium: "gemini-4-neon-medium",
+    high: "gemini-4-neon-high",
+    xhigh: "gemini-4-neon-xhigh"
   },
   "claude-opus-5-5": {
     low: "claude-opus-5-5-low",

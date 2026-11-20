@@ -460,6 +460,11 @@ describe("prepareAgyRequest Claude model detection and label setting", () => {
       expect(getModelEnum("gemini-4-hydrogen-high")).toBe("MODEL_PLACEHOLDER_M461");
       expect(getModelEnum("gemini-4-hydrogen-xhigh")).toBe("MODEL_PLACEHOLDER_M464");
       expect(resolveEnterpriseModelName("gemini-4-hydrogen-xhigh")).toBe("gemini-4-hydrogen-xhigh");
+      expect(getModelEnum("gemini-4-neon-low")).toBe("MODEL_PLACEHOLDER_M465");
+      expect(getModelEnum("gemini-4-neon-medium")).toBe("MODEL_PLACEHOLDER_M466");
+      expect(getModelEnum("gemini-4-neon-high")).toBe("MODEL_PLACEHOLDER_M467");
+      expect(getModelEnum("gemini-4-neon-xhigh")).toBe("MODEL_PLACEHOLDER_M468");
+      expect(resolveEnterpriseModelName("gemini-4-neon-xhigh")).toBe("gemini-4-neon-xhigh");
     });
 
     it("sets model_enum to MODEL_PLACEHOLDER_M16 in prepareAgyRequest for gemini-3.1-pro-high", () => {
